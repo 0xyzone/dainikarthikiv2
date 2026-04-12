@@ -11,13 +11,13 @@ class StatsOverview extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $totalIncome = IncomeRecord::get()->sum('amount');
-        $totalExpenses = ExpenseRecord::get()->sum('amount');
+        $totalIncome = IncomeRecord::get()->where('user_id', auth()->id())->sum('amount');
+        $totalExpenses = ExpenseRecord::get()->where('user_id', auth()->id())->sum('amount');
         $netProfit = $totalIncome - $totalExpenses;
-        $previousMonthIncome = IncomeRecord::whereMonth('date', now()->subMonth()->month)->get()->sum('amount');
-        $previousMonthExpenses = ExpenseRecord::whereMonth('date', now()->subMonth()->month)->get()->sum('amount');
-        $thisMonthIncome = IncomeRecord::whereMonth('date', now()->month)->get()->sum('amount');
-        $thisMonthExpenses = ExpenseRecord::whereMonth('date', now()->month)->get()->sum('amount');
+        $previousMonthIncome = IncomeRecord::whereMonth('date', now()->subMonth()->month)->where('user_id', auth()->id())->get()->sum('amount');
+        $previousMonthExpenses = ExpenseRecord::whereMonth('date', now()->subMonth()->month)->where('user_id', auth()->id())->get()->sum('amount');
+        $thisMonthIncome = IncomeRecord::whereMonth('date', now()->month)->where('user_id', auth()->id())->get()->sum('amount');
+        $thisMonthExpenses = ExpenseRecord::whereMonth('date', now()->month)->where('user_id', auth()->id())->get()->sum('amount');
         $thisMonthNetProfit = $thisMonthIncome - $thisMonthExpenses;
         $incomeChange = $previousMonthIncome > 0 ? (($thisMonthIncome - $previousMonthIncome) / $previousMonthIncome) * 100 : 0;
         $expensesChange = $previousMonthExpenses > 0 ? (($thisMonthExpenses - $previousMonthExpenses) / $previousMonthExpenses) * 100 : 0;

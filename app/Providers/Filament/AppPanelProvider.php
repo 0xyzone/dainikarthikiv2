@@ -33,7 +33,7 @@ class AppPanelProvider extends PanelProvider
             ->registration()
             ->passwordReset()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
             ])
             ->navigationGroups([
                 NavigationGroup::make()
