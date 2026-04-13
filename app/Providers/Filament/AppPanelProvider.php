@@ -95,11 +95,7 @@ class AppPanelProvider extends PanelProvider
                     ->shouldShowSanctumTokens()
                     ->shouldShowMultiFactorAuthentication()
                     ->shouldShowBrowserSessionsForm()
-                    ->shouldShowAvatarForm(
-                        value: true,
-                        directory: 'avatars', // image will be stored in 'storage/app/public/avatars
-                        rules: 'mimes:jpeg,png|max:2048' //only accept jpeg and png files with a maximum size of 2MB
-                    ),
+                    ->shouldShowAvatarForm(),
                 TwoFactorAuthenticationPlugin::make()
                     ->enableTwoFactorAuthentication() // Enable Google 2FA
                     ->enablePasskeyAuthentication() // Enable Passkey
