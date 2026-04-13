@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
 use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
@@ -70,10 +71,8 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar, Filame
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if ($this->avatar_url) {
-            return asset('storage/' . $this->avatar_url);
-        }
-        return null;
+        $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
+        return $this->$avatarColumn ? Storage::url($this->$avatarColumn) : null;
     }
 
     public function canAccessPanel(Panel $panel): bool
