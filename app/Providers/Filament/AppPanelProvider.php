@@ -26,6 +26,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -46,6 +47,7 @@ class AppPanelProvider extends PanelProvider
                     ->url(fn(): string => EditProfilePage::getUrl())
                     ->icon('heroicon-m-user-circle'),
             ])
+            ->databaseNotifications()
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('Incomes')
@@ -85,17 +87,26 @@ class AppPanelProvider extends PanelProvider
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
                     ->setTitle('My Profile')
-                    ->setNavigationLabel('My Profile')
-                    ->setNavigationGroup('Group Profile')
+                    // ->setNavigationLabel('My Profile')
+                    // ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
-                    ->canAccess(fn() => auth()->user()->id === 1)
-                    ->shouldRegisterNavigation(false)
+                    // ->canAccess(fn() => auth()->user()->id === 1)
+                    ->shouldRegisterNavigation()
                     ->shouldShowEmailForm()
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens()
+                    ->shouldShowMultiFactorAuthentication()
                     ->shouldShowBrowserSessionsForm()
-                    ->shouldShowAvatarForm(),
+                    ->shouldShowAvatarForm(
+                        value: true,
+                        directory: 'avatars', // image will be stored in 'storage/app/public/avatars
+                        rules: 'mimes:jpeg,png|max:2048' //only accept jpeg and png files with a maximum size of 2MB
+                    ),
+                TwoFactorAuthenticationPlugin::make()
+                    ->enableTwoFactorAuthentication() // Enable Google 2FA
+                    ->enablePasskeyAuthentication() // Enable Passkey
+                    ->addTwoFactorMenuItem() // Add 2FA menu item,
             ]);
     }
 }

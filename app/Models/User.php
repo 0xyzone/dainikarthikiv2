@@ -2,24 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\ExpenseSource;
 use App\Models\IncomeRecord;
 use App\Models\IncomeSource;
-use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
+use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail, HasAvatar, FilamentUser, HasPasskeys
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -62,5 +66,16 @@ class User extends Authenticatable
     public function expenseSources(): HasMany
     {
         return $this->hasMany(ExpenseSource::class);
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return asset('storage/' . $this->avatar_url);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+        // return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     }
 }
