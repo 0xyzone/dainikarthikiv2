@@ -9,6 +9,7 @@
         "php": "^8.3",
         "eightcedars/filament-inactivity-guard": "^1.1",
         "filament/filament": "^4.0",
+        "joaopaulolndev/filament-edit-profile": "^2.0",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "leandrocfe/filament-apex-charts": "^5.0"
