@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use EightCedars\FilamentInactivityGuard\FilamentInactivityGuardPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -69,7 +70,8 @@ class AppPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                FilamentApexChartsPlugin::make()
+                FilamentApexChartsPlugin::make(),
+                FilamentInactivityGuardPlugin::make()
             ]);
     }
 }
