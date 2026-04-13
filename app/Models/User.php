@@ -70,10 +70,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar, Filame
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if (! $this->avatar_url) {
-            return null;
+        if ($this->avatar_url) {
+            return asset('storage/' . $this->avatar_url);
         }
-        return asset('storage/' . $this->avatar_url);
+        return null;
     }
 
     public function canAccessPanel(Panel $panel): bool
