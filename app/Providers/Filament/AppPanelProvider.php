@@ -25,6 +25,7 @@ use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
+use MarcelWeidum\Passkeys\PasskeysPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -34,6 +35,7 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
+            ->profile()
             ->registration()
             ->passwordReset()
             ->colors([
@@ -100,7 +102,8 @@ class AppPanelProvider extends PanelProvider
                 TwoFactorAuthenticationPlugin::make()
                     ->enableTwoFactorAuthentication() // Enable Google 2FA
                     ->enablePasskeyAuthentication() // Enable Passkey
-                    ->addTwoFactorMenuItem() // Add 2FA menu item,
+                    ->addTwoFactorMenuItem(), // Add 2FA menu item,
+                // PasskeysPlugin::make(),
             ])
             ->renderHook(
                 'panels::scripts.after',
