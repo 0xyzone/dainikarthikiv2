@@ -19,6 +19,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
@@ -100,6 +101,10 @@ class AppPanelProvider extends PanelProvider
                     ->enableTwoFactorAuthentication() // Enable Google 2FA
                     ->enablePasskeyAuthentication() // Enable Passkey
                     ->addTwoFactorMenuItem() // Add 2FA menu item,
-            ]);
+            ])
+            ->renderHook(
+                'panels::scripts.after',
+                fn(): string => Blade::render('@passkeysScripts'),
+            );
     }
 }
