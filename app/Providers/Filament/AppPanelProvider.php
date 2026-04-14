@@ -104,10 +104,6 @@ class AppPanelProvider extends PanelProvider
                     ->enablePasskeyAuthentication() // Enable Passkey
                     ->addTwoFactorMenuItem(), // Add 2FA menu item,
                 // PasskeysPlugin::make(),
-            ])
-            ->renderHook(
-                'panels::scripts.after',
-                fn(): string => Blade::render('@passkeysScripts'),
-            );
+            ]);
     }
 }
