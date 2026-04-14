@@ -17,6 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
+use Spatie\LaravelPasskeys\Models\Concerns\InteractsWithPasskeys;
 use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 
 #[Fillable(['name', 'email', 'password'])]
@@ -24,7 +25,7 @@ use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticatable;
 class User extends Authenticatable implements MustVerifyEmail, HasAvatar, FilamentUser, HasPasskeys
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, InteractsWithPasskeys;
 
     /**
      * Get the attributes that should be cast.
