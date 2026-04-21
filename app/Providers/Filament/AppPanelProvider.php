@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Resources\IncomeRecordResource\Widgets\YearlyIncomeChart;
 use EightCedars\FilamentInactivityGuard\FilamentInactivityGuardPlugin;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
@@ -24,8 +25,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
-use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
 use MarcelWeidum\Passkeys\PasskeysPlugin;
+use Stephenjude\FilamentTwoFactorAuthentication\TwoFactorAuthenticationPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -66,6 +67,7 @@ class AppPanelProvider extends PanelProvider
             ->widgets([
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
+                YearlyIncomeChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
