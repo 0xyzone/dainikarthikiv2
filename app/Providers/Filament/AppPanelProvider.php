@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\App\Resources\IncomeRecordResource\Widgets\YearlyIncomeChart;
 use EightCedars\FilamentInactivityGuard\FilamentInactivityGuardPlugin;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
@@ -79,7 +78,6 @@ class AppPanelProvider extends PanelProvider
             ->widgets([
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
-                YearlyIncomeChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -2,50 +2,97 @@
 
 namespace App\Filament\App\Widgets;
 
-use App\Models\ExpenseRecord;
-use App\Models\IncomeRecord;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class IncomeVsExpense extends ApexChartWidget
 {
-    /**
-     * Chart Id
-     *
-     * @var string
-     */
     protected static ?string $chartId = 'incomeVsExpense';
-    protected static ?int $sort = 2;
 
-    /**
-     * Widget Title
-     *
-     * @var string|null
-     */
-    protected static ?string $heading = 'Income vs. Expense this month';
+    protected static ?int $sort = 3;
 
-    /**
-     * Chart options (series, labels, types, size, animations...)
-     * https://apexcharts.com/docs/options
-     *
-     * @return array
-     */
+    protected int|string|array $columnSpan = [
+        'default' => 'full',
+        'xl' => 1,
+    ];
+
+    protected static ?string $heading = 'Monthly Ratio (Income vs Expense)';
+
     protected function getOptions(): array
     {
-        $income = IncomeRecord::whereMonth('date', now()->month)->where('user_id', auth()->id())->get()->sum('amount');
-        $expense = ExpenseRecord::whereMonth('date', now()->month)->where('user_id', auth()->id())->get()->sum('amount');
+        $user = auth()->user();
+        $income = 0.0;
+        $expense = 0.0;
+
+        if ($user) {
+            $income = (float) $user->incomeRecords()
+                ->whereYear('date', now()->year)
+                ->whereMonth('date', now()->month)
+                ->sum('amount');
+
+            $expense = (float) $user->expenseRecords()
+                ->whereYear('date', now()->year)
+                ->whereMonth('date', now()->month)
+                ->sum('amount');
+        }
+
+        $hasData = ($income > 0 || $expense > 0);
+
         return [
             'chart' => [
                 'type' => 'donut',
-                'height' => 300,
+                'height' => 320,
             ],
-            'series' => [$income, $expense],
+            'series' => $hasData ? [$income, $expense] : [],
             'labels' => ['Income', 'Expense'],
+            'colors' => ['#10b981', '#ef4444'],
             'legend' => [
+                'position' => 'bottom',
                 'labels' => [
                     'fontFamily' => 'inherit',
                 ],
             ],
-            'colors' => ['#10B981', '#EF4444'], // Emerald and Red colors
+            'noData' => [
+                'text' => 'No income or expense this month',
+                'align' => 'center',
+                'verticalAlign' => 'middle',
+                'style' => [
+                    'color' => '#94a3b8',
+                    'fontSize' => '13px',
+                    'fontFamily' => 'inherit',
+                ],
+            ],
+            'plotOptions' => [
+                'pie' => [
+                    'donut' => [
+                        'size' => '70%',
+                        'labels' => [
+                            'show' => $hasData,
+                            'name' => [
+                                'show' => true,
+                                'fontSize' => '14px',
+                                'fontFamily' => 'inherit',
+                            ],
+                            'value' => [
+                                'show' => true,
+                                'fontSize' => '16px',
+                                'fontWeight' => 'bold',
+                                'fontFamily' => 'inherit',
+                                'formatter' => 'function(val) { return "रु " + Number(val).toLocaleString(); }',
+                            ],
+                            'total' => [
+                                'show' => true,
+                                'label' => 'Net',
+                                'fontFamily' => 'inherit',
+                                'formatter' => 'function(w) { return "रु " + (' . ($income - $expense) . ').toLocaleString(); }',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'dataLabels' => [
+                'enabled' => $hasData,
+                'formatter' => 'function(val) { return val.toFixed(1) + "%"; }',
+            ],
         ];
     }
 }
