@@ -92,6 +92,14 @@ class StatsOverview extends StatsOverviewWidget
                 ->sum('amount');
         }
 
+        $activeLoans = $user->loans()->where('status', 'active')->get();
+        $thisMonthEmisDue = (float) $user->loanEmis()
+            ->where('status', '!=', 'paid')
+            ->whereYear('due_date', $now->year)
+            ->whereMonth('due_date', $now->month)
+            ->sum('amount');
+        $activeLoanCount = $activeLoans->count();
+
         return [
             Stat::make('Total Income (This Month)', 'रु ' . number_format($thisMonthIncome, 2))
                 ->description($incomeDesc)
@@ -119,6 +127,11 @@ class StatsOverview extends StatsOverviewWidget
                 ->description($activeTakenCount . ' active ' . ($activeTakenCount === 1 ? 'payable' : 'payables'))
                 ->descriptionIcon('heroicon-m-arrow-down-left')
                 ->color('warning'),
+
+            Stat::make('EMIs Due This Month', 'रु ' . number_format($thisMonthEmisDue, 2))
+                ->description($activeLoanCount . ' active ' . ($activeLoanCount === 1 ? 'loan' : 'loans'))
+                ->descriptionIcon('heroicon-m-building-library')
+                ->color($thisMonthEmisDue > 0 ? 'danger' : 'gray'),
         ];
     }
 }

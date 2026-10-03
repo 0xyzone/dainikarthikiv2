@@ -90,6 +90,16 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar, Filame
         return $this->hasMany(Person::class);
     }
 
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function loanEmis(): HasMany
+    {
+        return $this->hasMany(LoanEmi::class);
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
