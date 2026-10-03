@@ -25,7 +25,7 @@ class LoanResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Credits & Debts';
 
-    protected static ?string $navigationLabel = 'Loans & EMIs';
+    protected static ?string $navigationLabel = 'Loans';
 
     protected static ?int $navigationSort = 1;
 

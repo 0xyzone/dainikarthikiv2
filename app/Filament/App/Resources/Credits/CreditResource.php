@@ -28,7 +28,7 @@ class CreditResource extends Resource
 
     protected static ?string $navigationLabel = 'Records';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'person_name';
 
