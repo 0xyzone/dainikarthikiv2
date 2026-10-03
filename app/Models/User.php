@@ -70,6 +70,26 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar, Filame
         return $this->hasMany(ExpenseSource::class);
     }
 
+    public function expenseRecords(): HasMany
+    {
+        return $this->hasMany(ExpenseRecord::class);
+    }
+
+    public function credits(): HasMany
+    {
+        return $this->hasMany(Credit::class);
+    }
+
+    public function creditPayments(): HasMany
+    {
+        return $this->hasMany(CreditPayment::class);
+    }
+
+    public function persons(): HasMany
+    {
+        return $this->hasMany(Person::class);
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');

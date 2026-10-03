@@ -15,6 +15,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -49,6 +50,14 @@ class AppPanelProvider extends PanelProvider
                     ->icon('heroicon-m-user-circle'),
             ])
             ->databaseNotifications()
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => view('filament.pwa-head'),
+            )
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn () => view('filament.pwa-installer'),
+            )
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('Incomes')
@@ -57,6 +66,9 @@ class AppPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Expenses')
                     ->icon(Heroicon::OutlinedCreditCard),
+                NavigationGroup::make()
+                    ->label('Credits & Debts')
+                    ->icon(Heroicon::OutlinedScale),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\Filament\App\Pages')
