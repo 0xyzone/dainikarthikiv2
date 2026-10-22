@@ -3,167 +3,445 @@
 @endphp
 
 <x-filament-panels::layout.base :livewire="$livewire">
-    <div class="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col justify-between relative overflow-hidden font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div class="auth-canvas">
         
         <!-- Ambient Atmospheric Glow Orbs (Design DNA) -->
-        <div class="fixed top-[-10%] left-[-10%] w-[550px] h-[550px] rounded-full bg-emerald-500/15 blur-[130px] pointer-events-none"></div>
-        <div class="fixed bottom-[-10%] right-[-10%] w-[650px] h-[650px] rounded-full bg-teal-500/10 blur-[150px] pointer-events-none"></div>
-        <div class="fixed top-[35%] right-[10%] w-[380px] h-[380px] rounded-full bg-cyan-500/10 blur-[110px] pointer-events-none"></div>
-        
-        <!-- Fine Subtle Grid Texture Backdrop -->
-        <div class="fixed inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+        <div class="auth-glow-orb-1"></div>
+        <div class="auth-glow-orb-2"></div>
+        <div class="auth-glow-mesh"></div>
 
         <!-- Top Header Navigation Bar -->
-        <header class="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-5 flex items-center justify-between">
-            <a href="/" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-emerald-400 border border-white/10 text-xs font-semibold backdrop-blur-xl transition group">
-                <svg class="w-4 h-4 text-emerald-400 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        <header class="auth-top-bar">
+            <a href="/" class="auth-back-btn" title="Return to website">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
                 <span>Back to Website</span>
             </a>
 
-            <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-slate-400 backdrop-blur-xl">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="font-medium text-slate-300">Live Secure Auth</span>
+            <div class="auth-status-pill">
+                <span class="auth-pulse-dot"></span>
+                <span>Live Secure Auth</span>
             </div>
         </header>
 
         <!-- Main Card Section (Mobile-First Ergonomic Centering) -->
-        <main class="relative z-20 flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
-            <div class="w-full max-w-md">
-                
-                <!-- Aeris Gradient Hairline Border Shell -->
-                <div class="p-[1.5px] rounded-[32px] bg-gradient-to-b from-emerald-500/35 via-teal-500/15 to-white/5 shadow-2xl shadow-black/80">
-                    <div class="w-full bg-slate-900/85 backdrop-blur-2xl rounded-[30px] p-6 sm:p-8 border border-white/10 relative overflow-hidden">
-                        
-                        <!-- Inner ambient card glow -->
-                        <div class="absolute -top-24 -left-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
-
-                        {{ $slot }}
-
-                    </div>
+        <main class="auth-main-section">
+            <div class="auth-card-shell">
+                <div class="auth-card-inner">
+                    <div class="auth-card-highlight"></div>
+                    {{ $slot }}
                 </div>
+            </div>
 
-                <!-- Bottom Security Reassurance Pill -->
-                <div class="mt-6 text-center space-y-2">
-                    <div class="inline-flex items-center gap-2 text-[11px] text-slate-400 font-medium">
-                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                        <span>Bank-Grade 256-bit SSL · Passkey Biometrics · Zero Tracking</span>
-                    </div>
-                </div>
-
+            <!-- Bottom Security Reassurance Pill -->
+            <div class="auth-security-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Bank-Grade 256-bit SSL · Passkey Biometrics · Zero Tracking</span>
             </div>
         </main>
 
         <!-- Minimal Footer -->
-        <footer class="relative z-20 w-full py-4 text-center text-[11px] text-slate-500">
+        <footer class="auth-footer">
             &copy; {{ date('Y') }} Dainik Arthiki OS. All rights reserved.
         </footer>
 
     </div>
 
-    <!-- Scoped Styles for Modern Filament Form Controls & Passkey Section -->
+    <!-- Self-Contained Complete Aeris & Design DNA Stylesheet -->
     <style>
-        /* Scoped overrides to transform default inputs into sleek Aeris glass inputs */
-        .fi-input-wrp {
-            background-color: rgba(2, 6, 23, 0.65) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            border-radius: 1rem !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        /* Base Viewport & Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
-        .fi-input-wrp:hover {
+
+        .auth-canvas {
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #090d16;
+            color: #f8fafc;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        /* Ambient Glow Orbs */
+        .auth-glow-orb-1 {
+            position: fixed;
+            top: -120px;
+            left: -120px;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0) 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .auth-glow-orb-2 {
+            position: fixed;
+            bottom: -120px;
+            right: -120px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.16) 0%, rgba(20, 184, 166, 0) 70%);
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .auth-glow-mesh {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Top Navigation Bar */
+        .auth-top-bar {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            padding-bottom: 16px;
+            z-index: 10;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .auth-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.35);
+            transform: translateX(-2px);
+        }
+
+        .auth-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 600;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .auth-pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: authPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes authPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Main Section & Bounded Card Shell */
+        .auth-main-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            position: relative;
+            margin: auto 0;
+            padding: 12px 0;
+            box-sizing: border-box;
+        }
+
+        /* Aeris Gradient Border Shell */
+        .auth-card-shell {
+            width: 100%;
+            max-width: 440px;
+            padding: 1.5px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.45) 0%, rgba(20, 184, 166, 0.2) 50%, rgba(255, 255, 255, 0.1) 100%);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 40px -10px rgba(16, 185, 129, 0.18);
+            box-sizing: border-box;
+        }
+
+        .auth-card-inner {
+            background: rgba(13, 19, 33, 0.92);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border-radius: 26.5px;
+            padding: 32px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card-highlight {
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Brand Emblem Header */
+        .auth-emblem-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .auth-emblem {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #059669 0%, #14b8a6 50%, #06b6d4 100%);
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.35);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .auth-emblem:hover {
+            transform: scale(1.05);
+        }
+
+        .auth-emblem-inner {
+            width: 100%;
+            height: 100%;
+            background: #090d16;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+        }
+
+        .auth-header-text {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .auth-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.025em;
+            margin: 0 0 6px 0;
+            line-height: 1.2;
+        }
+
+        .auth-subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .auth-subtitle a {
+            color: #34d399;
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-color: rgba(16, 185, 129, 0.35);
+            text-underline-offset: 3px;
+            transition: color 0.15s ease;
+        }
+
+        .auth-subtitle a:hover {
+            color: #6ee7b7;
+        }
+
+        /* Filament Form Controls Override */
+        .auth-card-inner .fi-form,
+        .auth-card-inner form {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 16px !important;
+            width: 100% !important;
+        }
+
+        .auth-card-inner .fi-sc {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 16px !important;
+            width: 100% !important;
+        }
+
+        .auth-card-inner .fi-input-wrp {
+            background-color: rgba(3, 7, 18, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            min-height: 46px !important;
+            width: 100% !important;
+        }
+
+        .auth-card-inner .fi-input-wrp:hover {
             border-color: rgba(16, 185, 129, 0.45) !important;
         }
-        .fi-input-wrp:focus-within {
+
+        .auth-card-inner .fi-input-wrp:focus-within {
             border-color: #10b981 !important;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
         }
-        .fi-input {
+
+        .auth-card-inner .fi-input {
             color: #ffffff !important;
-            font-size: 0.875rem !important;
+            font-size: 14px !important;
+            padding: 10px 14px !important;
+            background: transparent !important;
         }
-        .fi-input::placeholder {
+
+        .auth-card-inner .fi-input::placeholder {
             color: #64748b !important;
         }
 
-        /* Labels and field text */
-        .fi-fo-field-wrp-label label {
+        .auth-card-inner .fi-fo-field-wrp-label label {
             color: #cbd5e1 !important;
-            font-size: 0.75rem !important;
+            font-size: 11.5px !important;
             font-weight: 600 !important;
-            letter-spacing: 0.025em !important;
+            letter-spacing: 0.03em !important;
+            text-transform: uppercase !important;
+            margin-bottom: 5px !important;
+            display: inline-block !important;
         }
-        .fi-fo-field-wrp-label sup {
+
+        .auth-card-inner .fi-fo-field-wrp-label sup {
             color: #10b981 !important;
         }
 
-        /* Checkbox styling */
-        .fi-checkbox-input {
-            border-radius: 0.375rem !important;
-            background-color: rgba(2, 6, 23, 0.6) !important;
+        .auth-card-inner .fi-checkbox-input {
+            border-radius: 5px !important;
+            background-color: rgba(3, 7, 18, 0.7) !important;
             border-color: rgba(255, 255, 255, 0.2) !important;
             color: #10b981 !important;
+            width: 18px !important;
+            height: 18px !important;
         }
-        .fi-checkbox-input:checked {
+
+        .auth-card-inner .fi-checkbox-input:checked {
             background-color: #10b981 !important;
             border-color: #10b981 !important;
         }
 
-        /* Primary Form Action Button */
-        .fi-btn-color-primary,
-        button[type="submit"] {
+        .auth-card-inner .fi-btn-color-primary,
+        .auth-card-inner button[type="submit"] {
             background: linear-gradient(135deg, #10b981 0%, #0d9488 100%) !important;
-            color: #042f2e !important;
+            color: #022c22 !important;
             font-weight: 700 !important;
-            border-radius: 1rem !important;
-            padding: 0.75rem 1.25rem !important;
-            font-size: 0.875rem !important;
+            font-size: 14px !important;
+            border-radius: 14px !important;
+            padding: 12px 20px !important;
+            min-height: 46px !important;
             border: none !important;
-            box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.3) !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             width: 100% !important;
             display: flex !important;
-            justify-content: center !important;
             align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.45) !important;
             cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            margin-top: 6px !important;
         }
-        .fi-btn-color-primary:hover,
-        button[type="submit"]:hover {
+
+        .auth-card-inner .fi-btn-color-primary:hover,
+        .auth-card-inner button[type="submit"]:hover {
             background: linear-gradient(135deg, #34d399 0%, #14b8a6 100%) !important;
-            box-shadow: 0 12px 25px -4px rgba(16, 185, 129, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 10px 25px -4px rgba(16, 185, 129, 0.55) !important;
             transform: translateY(-1px) !important;
         }
-        .fi-btn-color-primary:active,
-        button[type="submit"]:active {
+
+        .auth-card-inner .fi-btn-color-primary:active,
+        .auth-card-inner button[type="submit"]:active {
             transform: scale(0.98) !important;
         }
 
-        /* Links (e.g. Forgot Password) */
-        .fi-link {
+        .auth-card-inner .fi-link {
             color: #34d399 !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            text-decoration: none !important;
             transition: color 0.15s ease !important;
-            font-size: 0.75rem !important;
-            font-weight: 500 !important;
         }
-        .fi-link:hover {
+
+        .auth-card-inner .fi-link:hover {
             color: #6ee7b7 !important;
         }
 
-        /* Passkey Biometric Section Elevation */
-        div:has(#passkey-login-form) {
+        /* Biometric Passkey Section - Styled STRICTLY to the direct container */
+        .auth-card-inner .flex:has(> #passkey-login-form) {
             display: flex !important;
             flex-direction: column !important;
             align-items: stretch !important;
             width: 100% !important;
-            margin-top: 1.5rem !important;
-            padding-top: 1.5rem !important;
+            margin-top: 22px !important;
+            padding-top: 20px !important;
             border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
             position: relative !important;
         }
-        div:has(#passkey-login-form)::before {
+
+        .auth-card-inner .flex:has(> #passkey-login-form)::before {
             content: "OR SIGN IN WITH BIOMETRICS";
             display: inline-block;
             position: absolute;
@@ -180,44 +458,87 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             white-space: nowrap;
         }
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] {
+
+        .auth-card-inner div[onclick="authenticateWithPasskey()"] {
             width: 100% !important;
         }
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] a,
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] .fi-link {
+
+        .auth-card-inner div[onclick="authenticateWithPasskey()"] a,
+        .auth-card-inner div[onclick="authenticateWithPasskey()"] .fi-link {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 0.625rem !important;
+            gap: 8px !important;
             width: 100% !important;
-            padding: 0.75rem 1rem !important;
-            border-radius: 1rem !important;
+            min-height: 44px !important;
+            padding: 10px 16px !important;
+            border-radius: 14px !important;
             background: rgba(16, 185, 129, 0.08) !important;
             border: 1px solid rgba(16, 185, 129, 0.25) !important;
             color: #34d399 !important;
             font-weight: 600 !important;
-            font-size: 0.8125rem !important;
+            font-size: 13px !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
             cursor: pointer !important;
             text-decoration: none !important;
+            box-sizing: border-box !important;
         }
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] a:hover,
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] .fi-link:hover {
+
+        .auth-card-inner div[onclick="authenticateWithPasskey()"] a:hover,
+        .auth-card-inner div[onclick="authenticateWithPasskey()"] .fi-link:hover {
             background: rgba(16, 185, 129, 0.16) !important;
             border-color: rgba(16, 185, 129, 0.45) !important;
             color: #6ee7b7 !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2) !important;
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.2) !important;
         }
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] a:active,
-        div:has(#passkey-login-form) div[onclick="authenticateWithPasskey()"] .fi-link:active {
-            transform: scale(0.98) !important;
-        }
-        div:has(#passkey-login-form) svg {
-            width: 1.25rem !important;
-            height: 1.25rem !important;
+
+        .auth-card-inner div[onclick="authenticateWithPasskey()"] svg {
+            width: 18px !important;
+            height: 18px !important;
             color: #10b981 !important;
+        }
+
+        /* Footer & Security Badge */
+        .auth-security-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .auth-footer {
+            color: #475569;
+            font-size: 11px;
+            padding: 12px 0 4px 0;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 480px) {
+            .auth-canvas {
+                padding: 12px;
+            }
+
+            .auth-card-inner {
+                padding: 24px 18px;
+                border-radius: 24px;
+            }
+
+            .auth-card-shell {
+                border-radius: 25.5px;
+            }
+
+            .auth-title {
+                font-size: 21px;
+            }
         }
     </style>
 </x-filament-panels::layout.base>

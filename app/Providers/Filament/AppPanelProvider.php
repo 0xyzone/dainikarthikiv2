@@ -38,7 +38,7 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->login(\App\Filament\App\Pages\Auth\Login::class)
             ->profile()
-            ->registration()
+            ->registration(\App\Filament\App\Pages\Auth\Register::class)
             ->passwordReset()
             ->emailVerification()
             ->colors([
