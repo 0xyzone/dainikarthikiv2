@@ -36,7 +36,7 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->id('app')
             ->path('app')
-            ->login()
+            ->login(\App\Filament\App\Pages\Auth\Login::class)
             ->profile()
             ->registration()
             ->passwordReset()
