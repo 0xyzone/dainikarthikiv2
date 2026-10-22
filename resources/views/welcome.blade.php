@@ -165,68 +165,34 @@
     <!-- Main Full-Width App Shell -->
     <div class="relative z-10 w-full flex flex-col flex-1 pb-safe">
 
-        <!-- ================= TOP NAVIGATION BAR ================= -->
-        <header class="sticky top-0 z-40 w-full glass-panel border-b border-white/5">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-                
-                <!-- Brand / Logo -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
-                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="1" x2="12" y2="23"></line>
-                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="text-base font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
-                            Dainik Arthiki
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        </span>
-                        <p class="text-[11px] font-medium text-slate-400 mt-0.5">Personal & Business Finance System</p>
+        <!-- ================= INLINE BRAND BAR ================= -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-1 w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
                     </div>
                 </div>
-
-                <!-- Desktop Desktop Tabs Navigation Links -->
-                <div class="hidden md:flex items-center gap-1 glass-card px-2 py-1 rounded-2xl border border-white/10">
-                    <button onclick="switchTab('overview')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-emerald-400 transition" data-tab="overview">
-                        Overview
-                    </button>
-                    <button onclick="switchTab('modules')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition" data-tab="modules">
-                        Core Modules
-                    </button>
-                    <button onclick="switchTab('security')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition" data-tab="security">
-                        Security & Privacy
-                    </button>
-                    <button onclick="switchTab('install')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition" data-tab="install">
-                        Mobile App (PWA)
-                    </button>
-                </div>
-
-                <!-- Auth Action Buttons (Prompts users to signup) -->
-                <div class="flex items-center gap-2.5">
-                    <!-- Install Prompt Button (visible when browser supports PWA) -->
-                    <button id="top-bar-install-btn" class="hidden items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 btn-touch">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        <span>Install App</span>
-                    </button>
-
-                    <a href="/app/login" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white border border-white/10 hover:bg-white/5 transition btn-touch">
-                        Sign In
-                    </a>
-
-                    <a href="/app/register" class="px-4 py-1.5 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 flex items-center gap-1.5 btn-touch">
-                        <span>Get Started Free</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
+                <div>
+                    <span class="text-base font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
+                        Dainik Arthiki
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    </span>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5">Finance Operating System</p>
                 </div>
             </div>
-        </header>
+
+            <!-- Combined Sign In / Sign Up Trigger -->
+            <button onclick="toggleAccountSheet(true)" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-bold rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 btn-touch">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span>Account</span>
+            </button>
+        </div>
 
         <!-- ================= SMART PWA INSTALL BANNER ================= -->
         <div id="smart-install-banner" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 w-full">
@@ -693,6 +659,16 @@
                     <span class="text-[10px] font-bold">Install</span>
                 </button>
 
+                <!-- Tab: Account (Single Icon for Sign In / Sign Up) -->
+                <button onclick="toggleAccountSheet(true)" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 sm:px-4 rounded-2xl text-slate-400 hover:text-emerald-400 transition-all btn-touch" data-tab="account">
+                    <div class="relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-[10px] font-bold">Account</span>
+                </button>
+
             </div>
         </nav>
 
@@ -1034,7 +1010,6 @@
             }
 
             if (bannerTrigger) bannerTrigger.addEventListener('click', triggerInstallation);
-            if (topBarInstallBtn) topBarInstallBtn.addEventListener('click', triggerInstallation);
             if (pageInstallBtn) pageInstallBtn.addEventListener('click', triggerInstallation);
 
             if (bannerDismiss) {
@@ -1046,10 +1021,28 @@
 
             window.addEventListener('appinstalled', () => {
                 if (smartBanner) smartBanner.classList.add('hidden');
-                if (topBarInstallBtn) topBarInstallBtn.classList.add('hidden');
                 if (statusText) statusText.textContent = 'Successfully Installed!';
                 deferredPrompt = null;
             });
+        }
+
+        // ----------------------------------------------------
+        // 5. Account Action Sheet (Sign In / Sign Up Modal)
+        // ----------------------------------------------------
+        function toggleAccountSheet(show) {
+            const sheet = document.getElementById('account-action-sheet');
+            if (!sheet) return;
+            if (show) {
+                sheet.classList.remove('hidden');
+            } else {
+                sheet.classList.add('hidden');
+            }
+        }
+
+        function handleSheetBackdropClick(e) {
+            if (e.target.id === 'account-action-sheet') {
+                toggleAccountSheet(false);
+            }
         }
 
         // Initialize Three.js on DOM ready
@@ -1057,5 +1050,32 @@
             initThreeEmblem();
         });
     </script>
+
+    <!-- ================= NATIVE ACCOUNT / AUTH ACTION SHEET ================= -->
+    <div id="account-action-sheet" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md" onclick="handleSheetBackdropClick(event)">
+        <div class="w-full max-w-sm glass-panel p-6 rounded-3xl border border-white/10 shadow-2xl space-y-4 text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shadow-lg border border-emerald-500/30">
+                👤
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Access Your Account</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Manage your personal and business financial ledgers</p>
+            </div>
+            <div class="space-y-2.5 pt-1">
+                <a href="/app/register" class="block w-full py-3 px-4 text-xs font-bold rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 btn-touch">
+                    Create Free Account (Sign Up)
+                </a>
+                <a href="/app/login" class="block w-full py-3 px-4 text-xs font-semibold rounded-2xl bg-white/5 hover:bg-white/10 text-white border border-white/10 btn-touch">
+                    Sign In to Existing Account
+                </a>
+                <a href="/app" class="block text-xs font-semibold text-slate-400 hover:text-emerald-400 pt-1">
+                    Open Web Dashboard Directly →
+                </a>
+            </div>
+            <button onclick="toggleAccountSheet(false)" class="w-full py-2 text-xs text-slate-500 hover:text-slate-300 transition">
+                Close
+            </button>
+        </div>
+    </div>
 </body>
 </html>
