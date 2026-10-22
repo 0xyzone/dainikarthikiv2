@@ -1,1242 +1,1100 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'DainikArthiki') }} - Smart Finance Management</title>
-    @include('filament.pwa-head')
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700&family=inter:300,400,500,600,700" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>{{ config('app.name', 'Dainik Arthiki') }} - Mobile Finance App</title>
     
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <link href="https://cdn.tailwindcss.com" rel="stylesheet">
-    @endif
+    @include('filament.pwa-head')
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN for instant styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                            950: '#022c22',
+                        },
+                        slate: {
+                            850: '#111827',
+                            900: '#0b0f19',
+                            950: '#060911',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Three.js for 3D Interactive Coin / Centerpiece -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP for Smooth Fluid Motion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <style>
+        :root {
+            --app-max-width: 440px;
+            --safe-bottom: env(safe-area-inset-bottom, 16px);
+            --safe-top: env(safe-area-inset-top, 16px);
+        }
+
         * {
-            margin: 0;
-            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        :root {
-            --primary-green: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #d1fae5;
-            --secondary-green: #14b8a6;
-            --accent-cyan: #06b6d4;
-            --accent-teal: #0d9488;
-            --dark-bg: #0f172a;
-            --light-bg: #f8fafc;
-            --dark-card: #1e293b;
-            --light-card: #ffffff;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        body.dark-mode {
-            background: linear-gradient(135deg, #0a0e27 0%, #0f172a 50%, #0f1930 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #060911;
             color: #f1f5f9;
-        }
-
-        body.light-mode {
-            background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #ecf9ff 100%);
-            color: #334155;
-        }
-
-        /* Animated Particles Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .floating-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.25;
-            mix-blend-mode: screen;
-        }
-
-        .orb-1 {
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, #10b981, #14b8a6);
-            top: -100px;
-            left: -150px;
-            animation: float 25s infinite ease-in-out, glow-pulse 8s infinite;
-            filter: blur(80px) drop-shadow(0 0 80px rgba(16, 185, 129, 0.3));
-        }
-
-        .orb-2 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #14b8a6, #06b6d4);
-            top: 30%;
-            right: -120px;
-            animation: float 30s infinite ease-in-out reverse, glow-pulse 7s infinite 1s;
-            filter: blur(80px) drop-shadow(0 0 60px rgba(20, 184, 166, 0.3));
-        }
-
-        .orb-3 {
-            width: 450px;
-            height: 450px;
-            background: linear-gradient(135deg, #06b6d4, #10b981);
-            bottom: -150px;
-            left: 15%;
-            animation: float 35s infinite ease-in-out, glow-pulse 9s infinite 2s;
-            filter: blur(80px) drop-shadow(0 0 70px rgba(6, 182, 212, 0.25));
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
-            33% { transform: translateY(-40px) translateX(30px) scale(1.05); }
-            66% { transform: translateY(40px) translateX(-30px) scale(0.95); }
-        }
-
-        @keyframes glow-pulse {
-            0%, 100% { opacity: 0.25; }
-            50% { opacity: 0.45; }
-        }
-
-        /* Floating Particles */
-        .particle {
-            position: fixed;
-            pointer-events: none;
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        .particle-small {
-            width: 4px;
-            height: 4px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.6), rgba(20, 184, 166, 0.4));
-            animation: float-particle 15s infinite;
-        }
-
-        .particle-medium {
-            width: 8px;
-            height: 8px;
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(16, 185, 129, 0.3));
-            animation: float-particle 20s infinite;
-        }
-
-        @keyframes float-particle {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) translateX(100px) scale(0); opacity: 0; }
-        }
-        .hero-section {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding: 2rem;
-            margin-top: 60px;
+            min-height: -webkit-fill-available;
         }
 
-        .hero-content {
-            text-align: center;
-            z-index: 10;
-            animation: slideInUp 1s ease-out;
-            position: relative;
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .hero-content::before {
-            content: '';
-            position: absolute;
-            top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.15), transparent);
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .glass-card-emerald {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(6, 78, 59, 0.25) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(52, 211, 153, 0.22);
+        }
+
+        /* Ambient Glow Background */
+        .glow-orb {
+            position: fixed;
             border-radius: 50%;
-            animation: pulse-glow 4s ease-in-out infinite;
+            filter: blur(90px);
             pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
-            50% { transform: translateX(-50%) scale(1.2); opacity: 0.8; }
+        /* Native App Scroll Container */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        .hero-title {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green), var(--accent-cyan), var(--accent-teal));
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
-            animation: gradient-shift 8s ease infinite, slide-down 1.2s ease-out;
-            text-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+        /* Tactile Press Feedback */
+        .btn-touch {
+            transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.12s ease;
+        }
+        .btn-touch:active {
+            transform: scale(0.96);
+            opacity: 0.88;
         }
 
-        @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes slide-down {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1rem, 4vw, 1.5rem);
-            opacity: 0.85;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: slideInUp 1.2s ease-out 0.2s both;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Button Enhancements */
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1.1rem 2.2rem;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-            color: white;
-            border: none;
-            border-radius: 0.85rem;
-            font-size: 1.05rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-            text-decoration: none;
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.25), 
-                        0 0 20px rgba(20, 184, 166, 0.15),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            animation: slideInUp 1.4s ease-out 0.4s both;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn-primary:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 16px 48px rgba(16, 185, 129, 0.35),
-                        0 0 30px rgba(20, 184, 166, 0.25),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1.1rem 2.2rem;
-            background: transparent;
-            color: var(--primary-green);
-            border: 2.5px solid var(--primary-green);
-            border-radius: 0.85rem;
-            font-size: 1.05rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            animation: slideInUp 1.4s ease-out 0.5s both;
-        }
-
-        .btn-secondary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        /* 3D Canvas Box */
+        #coin-canvas-container {
             width: 100%;
-            height: 100%;
-            background: var(--primary-green);
-            transition: left 0.4s ease;
-            z-index: -1;
+            height: 200px;
+            position: relative;
+            cursor: grab;
+        }
+        #coin-canvas-container:active {
+            cursor: grabbing;
         }
 
-        .btn-secondary:hover::before {
-            left: 0;
+        /* Bottom Nav Safe Padding */
+        .pb-safe {
+            padding-bottom: calc(var(--safe-bottom) + 5rem);
         }
 
-        .btn-secondary:hover {
-            color: white;
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
-            transform: translateY(-3px);
+        /* Card Deck Stack Transitions */
+        .deck-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: center top;
+        }
+        .deck-card.is-active {
+            transform: translateY(0) scale(1) !important;
+            border-color: rgba(52, 211, 153, 0.4) !important;
+            box-shadow: 0 15px 35px -5px rgba(16, 185, 129, 0.25);
         }
 
-        /* Scroll Animation */
-        .scroll-reveal {
+        /* SPA Tab Fade & Slide */
+        .spa-tab-content {
+            display: none;
             opacity: 0;
-            transform: translateY(60px);
-            transition: all 1s cubic-bezier(0.23, 1, 0.320, 1);
+            transform: translateY(12px);
         }
-
-        .scroll-reveal.active {
+        .spa-tab-content.active {
+            display: block;
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Features Section */
-        .features-section {
-            position: relative;
-            z-index: 5;
-            padding: 8rem 2rem;
-            text-align: center;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1300px;
-            margin: 0 auto;
-            perspective: 1200px;
-        }
-
-        .interactive-card {
-            position: relative;
-            height: 320px;
-            border-radius: 1.5rem;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-        }
-
-        .card-glow {
-            position: absolute;
-            inset: -2px;
-            border-radius: 1.5rem;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(20, 184, 166, 0.1));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 0;
-        }
-
-        .interactive-card:hover .card-glow {
-            opacity: 1;
-        }
-
-        .card-border {
-            position: absolute;
-            inset: 0;
-            border-radius: 1.5rem;
-            border: 2px solid rgba(16, 185, 129, 0.2);
-            transition: border-color 0.4s ease;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .interactive-card:hover .card-border {
-            border-color: var(--primary-green);
-        }
-
-        .card-content {
-            position: absolute;
-            inset: 0;
-            padding: 2.5rem 2rem;
-            border-radius: 1.5rem;
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 2;
-            transition: all 0.4s ease;
-        }
-
-        body.light-mode .card-content {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(240, 253, 244, 0.85));
-        }
-
-        body.dark-mode .card-content {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.8));
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-            transition: transform 0.4s ease;
-        }
-
-        .interactive-card:hover .card-icon {
-            transform: scale(1.2);
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 900;
-            margin-bottom: 0.8rem;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: all 0.4s ease;
-        }
-
-        .interactive-card:hover .card-title {
-            background: linear-gradient(135deg, var(--secondary-green), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .card-text {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            opacity: 0.75;
-            font-weight: 500;
-            transition: opacity 0.4s ease;
-        }
-
-        .interactive-card:hover .card-text {
-            opacity: 0.9;
-        }
-
-        .features-header {
-            text-align: center;
-            margin-bottom: 6rem;
-        }
-
-        .features-heading {
-            font-size: clamp(2rem, 6vw, 3rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .features-subheading {
-            font-size: 1.1rem;
-            opacity: 0.7;
-            max-width: 600px;
-            margin: 0 auto;
-            font-weight: 500;
-        }
-
-        .interactive-features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1300px;
-            margin: 0 auto;
-            perspective: 1200px;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.1); }
-        }
-
-        @keyframes bounce-fast {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.15); }
-        }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3),
-                        0 0 20px rgba(20, 184, 166, 0.15);
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.15) rotate(15deg);
-            box-shadow: 0 12px 48px rgba(16, 185, 129, 0.4),
-                        0 0 30px rgba(20, 184, 166, 0.25);
-        }
-
-        .theme-toggle:active {
-            transform: scale(1.1) rotate(15deg);
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            padding: 1.5rem 2rem;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(16, 185, 129, 0.15);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.05);
-        }
-
-        body.light-mode nav {
-            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(240, 253, 244, 0.9));
-        }
-
-        body.dark-mode nav {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 14, 39, 0.9));
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green), var(--accent-cyan));
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 6s ease infinite;
-            letter-spacing: 0.5px;
-        }
-
-        /* Stats Section */
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 2.5rem;
-            border-radius: 1.2rem;
-            backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(16, 185, 129, 0.15);
-            transition: all 0.5s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), transparent);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        body.light-mode .stat-card {
-            background: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.08);
-        }
-
-        body.dark-mode .stat-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.05);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            border-color: var(--primary-green);
-            box-shadow: 0 16px 48px rgba(16, 185, 129, 0.2);
-        }
-
-        .stat-card:hover::after {
-            opacity: 1;
-        }
-
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green), var(--accent-cyan));
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-            animation: gradient-shift 8s ease infinite;
-        }
-
-        .stat-label {
-            opacity: 0.8;
-            font-weight: 600;
-            font-size: 1.05rem;
-            letter-spacing: 0.5px;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
-                letter-spacing: -0.01em;
-            }
-            .theme-toggle {
-                width: 50px;
-                height: 50px;
-                font-size: 1.3rem;
-            }
-            nav {
-                padding: 1rem;
-            }
-        }
-
-        @keyframes bob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(12px); }
-        }
-
-        .scroll-indicator {
-            animation: bob 2.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            position: relative;
-            padding: 8rem 2rem;
-            text-align: center;
-            overflow: hidden;
-            z-index: 5;
-        }
-
-        .cta-background {
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .cta-orb-1, .cta-orb-2 {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            mix-blend-mode: screen;
-            animation: float 30s infinite ease-in-out;
-        }
-
-        .cta-orb-1 {
-            width: 500px;
-            height: 500px;
-            background: rgba(16, 185, 129, 0.3);
-            top: -150px;
-            left: -150px;
-        }
-
-        .cta-orb-2 {
-            width: 400px;
-            height: 400px;
-            background: rgba(20, 184, 166, 0.25);
-            bottom: -100px;
-            right: -100px;
-            animation-delay: -15s;
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 10;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .cta-title {
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green), var(--accent-cyan), var(--accent-teal));
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 8s ease infinite, slideInUp 1.2s ease-out;
-            letter-spacing: -0.02em;
-        }
-
-        .cta-subtitle {
-            font-size: 1.15rem;
-            opacity: 0.85;
-            margin-bottom: 2.5rem;
-            line-height: 1.8;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            animation: slideInUp 1.4s ease-out 0.2s both;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-
-        .cta-buttons .btn-primary,
-        .cta-buttons .btn-secondary {
-            animation: slideInUp 1.6s ease-out 0.4s both;
-        }
-
-        .cta-footer-text {
-            opacity: 0.6;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            animation: slideInUp 1.8s ease-out 0.6s both;
-        }
-
-        /* Footer */
-        .footer {
-            position: relative;
-            padding: 4rem 2rem 2rem;
-            background: linear-gradient(180deg, transparent, rgba(16, 185, 129, 0.03));
-            border-top: 1px solid rgba(16, 185, 129, 0.1);
-            margin-top: 6rem;
-            z-index: 5;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            max-width: 1200px;
-            margin: 0 auto 2rem;
-        }
-
-        .footer-section {
-            text-align: left;
-        }
-
-        .footer-brand {
-            font-size: 1.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-section a:hover {
-            color: var(--primary-green) !important;
-            border-bottom: 1px solid var(--primary-green) !important;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(16, 185, 129, 0.05);
-            opacity: 0.6;
-            font-size: 0.95rem;
-        }
-
-        @media (max-width: 1024px) {
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .cta-buttons .btn-primary,
-            .cta-buttons .btn-secondary {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .cta-section {
-                padding: 6rem 1.5rem;
-            }
-
-            .cta-title {
-                font-size: 1.8rem;
-            }
-
-            .footer-content {
-                gap: 2rem;
-                grid-template-columns: 1fr;
-            }
-
-            .footer-section {
-                text-align: center;
-            }
+        /* Balance Hide Blur */
+        .blurred-amount {
+            filter: blur(8px);
+            transition: filter 0.25s ease;
         }
     </style>
 </head>
-<body class="light-mode">
-    <div class="animated-bg">
-        <div class="floating-orb orb-1"></div>
-        <div class="floating-orb orb-2"></div>
-        <div class="floating-orb orb-3"></div>
+
+<body class="flex justify-center bg-slate-950 text-slate-100">
+
+    <!-- Ambient Glow Orbs -->
+    <div class="glow-orb w-72 h-72 bg-emerald-500 top-[-60px] left-[-60px]"></div>
+    <div class="glow-orb w-80 h-80 bg-teal-600 top-[35%] right-[-80px]"></div>
+    <div class="glow-orb w-72 h-72 bg-cyan-600 bottom-[80px] left-[-40px]"></div>
+
+    <!-- Main Mobile App Shell Frame -->
+    <div class="relative z-10 w-full max-w-[460px] min-h-screen flex flex-col bg-slate-900/90 border-x border-slate-800/60 shadow-2xl pb-safe">
+
+        <!-- ================= TOP APP BAR ================= -->
+        <header class="sticky top-0 z-40 px-4 pt-3 pb-3 glass-panel border-b border-white/5 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
+                        Dainik Arthiki
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    </h1>
+                    <p class="text-[10px] font-medium text-slate-400 mt-0.5">Finance Operating System</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <!-- Install Button in Top Bar (visible when installable) -->
+                <button id="top-bar-install-btn" class="hidden items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 btn-touch">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span>Install</span>
+                </button>
+
+                <!-- Launch App / Login Button -->
+                <a href="/app" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/30 flex items-center gap-1 btn-touch">
+                    <span>Open App</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </header>
+
+        <!-- ================= SMART PWA INSTALL BANNER ================= -->
+        <div id="smart-install-banner" class="hidden px-4 pt-3 pb-1">
+            <div class="glass-card-emerald p-3 rounded-2xl flex items-center justify-between gap-3 shadow-lg">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center shrink-0">
+                        <span class="text-lg">📲</span>
+                    </div>
+                    <div class="leading-tight">
+                        <div class="text-xs font-bold text-white flex items-center gap-1">
+                            Install Dainik Arthiki
+                        </div>
+                        <p class="text-[11px] text-slate-300">Fast 1-tap launch & offline usage</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="banner-install-trigger" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-400 text-slate-950 hover:bg-emerald-300 shadow-md btn-touch">
+                        Install
+                    </button>
+                    <button id="banner-dismiss-btn" class="p-1.5 text-slate-400 hover:text-white rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= SPA TAB 1: HOME FEED ================= -->
+        <main id="tab-home" class="spa-tab-content active px-4 pt-3 space-y-4">
+
+            <!-- Native User / Quick Stats Greeting -->
+            <div class="flex items-center justify-between pt-1">
+                <div>
+                    <span class="text-xs font-medium text-slate-400" id="live-time-greeting">Namaste 🙏</span>
+                    <h2 class="text-lg font-bold text-white tracking-tight">Financial Overview</h2>
+                </div>
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-semibold text-emerald-400">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Cloud Synced</span>
+                </div>
+            </div>
+
+            <!-- Main Wallet / Balance Master Card -->
+            <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-slate-800/90 via-slate-900 to-slate-950 border border-white/10 shadow-xl">
+                <!-- Card Background Pattern -->
+                <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-emerald-500/15 blur-2xl pointer-events-none"></div>
+                <div class="absolute right-4 bottom-4 opacity-10">
+                    <svg class="w-24 h-24 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                    </svg>
+                </div>
+
+                <div class="relative z-10 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Net Balance</span>
+                        <button id="toggle-balance-btn" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition" title="Toggle visibility">
+                            <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-sm font-semibold text-emerald-400 font-mono">NPR</span>
+                        <h3 id="balance-display" class="text-3xl font-extrabold text-white tracking-tight font-mono">1,84,550.00</h3>
+                    </div>
+
+                    <!-- Flow Pill Breakdown -->
+                    <div class="grid grid-cols-2 gap-2.5 pt-1">
+                        <div class="p-2.5 rounded-2xl bg-white/[0.04] border border-white/5">
+                            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mb-0.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                <span>Monthly Income</span>
+                            </div>
+                            <p class="text-sm font-bold text-emerald-300 font-mono">+Rs. 95,000</p>
+                        </div>
+                        <div class="p-2.5 rounded-2xl bg-white/[0.04] border border-white/5">
+                            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mb-0.5">
+                                <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                                <span>Monthly Expense</span>
+                            </div>
+                            <p class="text-sm font-bold text-rose-300 font-mono">-Rs. 38,450</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Grid (Tactile Touch Buttons) -->
+            <div class="grid grid-cols-4 gap-2 pt-1">
+                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </div>
+                    <span class="text-[11px] font-semibold text-slate-200">Income</span>
+                </a>
+
+                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
+                    <div class="w-11 h-11 rounded-2xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-rose-400 group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path>
+                        </svg>
+                    </div>
+                    <span class="text-[11px] font-semibold text-slate-200">Expense</span>
+                </a>
+
+                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
+                    <div class="w-11 h-11 rounded-2xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center text-teal-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                    </div>
+                    <span class="text-[11px] font-semibold text-slate-200">Credits</span>
+                </a>
+
+                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-[11px] font-semibold text-slate-200">EMIs</span>
+                </a>
+            </div>
+
+            <!-- ================= THREE.JS 3D INTERACTIVE ARTHIKI COIN ================= -->
+            <div class="relative glass-card rounded-3xl p-4 overflow-hidden border border-emerald-500/20">
+                <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-white uppercase tracking-wider">Interactive 3D Emblem</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">Touch & Drag</span>
+                    </div>
+                    <span class="text-xs text-slate-400">WebGL 60FPS</span>
+                </div>
+                
+                <div id="coin-canvas-container" class="rounded-2xl overflow-hidden flex items-center justify-center">
+                    <!-- Canvas injected by Three.js -->
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+                    <span>Gyroscopic Coin Physics</span>
+                    <button id="reset-coin-btn" class="text-emerald-400 hover:text-emerald-300 font-medium btn-touch">Reset Position</button>
+                </div>
+            </div>
+
+            <!-- Ledger Summary Highlights -->
+            <div class="space-y-2.5">
+                <div class="flex items-center justify-between px-1">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Active Ledger Highlights</h4>
+                    <button onclick="switchTab('decks')" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5">
+                        <span>View Decks</span>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Highlight Card 1: Credit Given -->
+                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between hover:border-emerald-500/30 transition btn-touch">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/20 flex items-center justify-center text-teal-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">Credits Given (To Collect)</p>
+                            <p class="text-[11px] text-slate-400">4 active counterparties</p>
+                        </div>
+                    </div>
+                    <div class="text-right font-mono">
+                        <p class="text-sm font-bold text-teal-400">Rs. 42,000</p>
+                        <span class="text-[10px] text-slate-400">Receivable</span>
+                    </div>
+                </div>
+
+                <!-- Highlight Card 2: Upcoming EMI -->
+                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between hover:border-amber-500/30 transition btn-touch">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">Home Loan EMI Due</p>
+                            <p class="text-[11px] text-amber-300/80">Due in 5 days (Oct 28)</p>
+                        </div>
+                    </div>
+                    <div class="text-right font-mono">
+                        <p class="text-sm font-bold text-amber-400">Rs. 24,500</p>
+                        <span class="text-[10px] text-slate-400">Installment #14</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instant PWA Offline & Passkey Alert Card -->
+            <div class="glass-card-emerald p-4 rounded-3xl space-y-3">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center shrink-0 text-emerald-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white">Enterprise Security & Offline Ready</h4>
+                        <p class="text-[11px] text-slate-300 leading-snug mt-0.5">Protected with WebAuthn Passkeys, 2-Factor Authentication, and full offline caching.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <a href="/app/register" class="flex-1 py-2 px-3 text-center text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md btn-touch">
+                        Create Free Account
+                    </a>
+                    <button onclick="switchTab('install')" class="py-2 px-3 text-xs font-semibold rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/10 btn-touch">
+                        Install Guide
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+
+        <!-- ================= SPA TAB 2: CARDS & DECKS ================= -->
+        <section id="tab-decks" class="spa-tab-content px-4 pt-3 space-y-4">
+            <div>
+                <span class="text-xs font-medium text-emerald-400">Tactile Modular Decks</span>
+                <h2 class="text-lg font-bold text-white">Your Financial Stacks</h2>
+                <p class="text-xs text-slate-400">Tap any deck to expand ledger details and transactions</p>
+            </div>
+
+            <!-- Deck Stack Interface Container -->
+            <div class="space-y-3" id="decks-container">
+
+                <!-- DECK 1: INCOME SOURCES DECK -->
+                <div class="deck-card glass-card p-4 rounded-3xl border border-emerald-500/30 cursor-pointer" onclick="toggleDeck(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                                📈
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Income Sources Deck</h3>
+                                <p class="text-[11px] text-slate-400">Primary Salary, Freelance, Dividends</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-emerald-400">+Rs. 95K/mo</span>
+                    </div>
+
+                    <!-- Expandable Details -->
+                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Tech Job Salary</span>
+                            <span class="font-mono text-white">Rs. 75,000</span>
+                        </div>
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Freelance Consulting</span>
+                            <span class="font-mono text-white">Rs. 15,000</span>
+                        </div>
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Stock Dividends</span>
+                            <span class="font-mono text-white">Rs. 5,000</span>
+                        </div>
+                        <div class="pt-2 flex gap-2">
+                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-emerald-500 text-slate-950 btn-touch">Manage Sources</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DECK 2: EXPENSES DECK -->
+                <div class="deck-card glass-card p-4 rounded-3xl border border-rose-500/30 cursor-pointer" onclick="toggleDeck(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">
+                                🛒
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Expense Control Deck</h3>
+                                <p class="text-[11px] text-slate-400">Groceries, Fuel, Utilities, Rent</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-rose-400">-Rs. 38.4K/mo</span>
+                    </div>
+
+                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Apartment Rent & Bills</span>
+                            <span class="font-mono text-white">Rs. 20,000</span>
+                        </div>
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Groceries & Market</span>
+                            <span class="font-mono text-white">Rs. 11,200</span>
+                        </div>
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Fuel & Transit</span>
+                            <span class="font-mono text-white">Rs. 7,250</span>
+                        </div>
+                        <div class="pt-2 flex gap-2">
+                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-rose-500 text-white btn-touch">Add Expense</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DECK 3: CREDITS & BORROWINGS DECK -->
+                <div class="deck-card glass-card p-4 rounded-3xl border border-teal-500/30 cursor-pointer" onclick="toggleDeck(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
+                                🤝
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Personal Credits Deck</h3>
+                                <p class="text-[11px] text-slate-400">Money lent to friends & counter-parties</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-teal-400">Rs. 42,000</span>
+                    </div>
+
+                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Ram Shrestha</span>
+                            <span class="font-mono text-emerald-400">Rs. 25,000 (To Receive)</span>
+                        </div>
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Sunil KC</span>
+                            <span class="font-mono text-emerald-400">Rs. 17,000 (To Receive)</span>
+                        </div>
+                        <div class="pt-2 flex gap-2">
+                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-teal-500 text-slate-950 btn-touch">Log Payment</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DECK 4: LOAN EMIS DECK -->
+                <div class="deck-card glass-card p-4 rounded-3xl border border-amber-500/30 cursor-pointer" onclick="toggleDeck(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                                🏦
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Bank Loans & EMIs</h3>
+                                <p class="text-[11px] text-slate-400">Auto-calculated amortization</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-amber-400">2 Active</span>
+                    </div>
+
+                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Home Mortgage (Nabil)</span>
+                            <span class="font-mono text-white">Rs. 24,500 / mo</span>
+                        </div>
+                        <div class="flex justify-between text-xs py-1">
+                            <span class="text-slate-400">Vehicle Loan (Global IME)</span>
+                            <span class="font-mono text-white">Rs. 12,300 / mo</span>
+                        </div>
+                        <div class="pt-2 flex gap-2">
+                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-amber-500 text-slate-950 btn-touch">View Schedule</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= SPA TAB 3: ANALYTICS ================= -->
+        <section id="tab-analytics" class="spa-tab-content px-4 pt-3 space-y-4">
+            <div>
+                <span class="text-xs font-medium text-emerald-400">Intelligent Insights</span>
+                <h2 class="text-lg font-bold text-white">Cashflow Analytics</h2>
+                <p class="text-xs text-slate-400">Monthly budget consumption and savings pace</p>
+            </div>
+
+            <!-- Savings Ratio Meter -->
+            <div class="glass-card p-4 rounded-3xl space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white">Savings Efficiency Ratio</span>
+                    <span class="text-xs font-mono font-bold text-emerald-400">59.5%</span>
+                </div>
+                <div class="w-full h-3 rounded-full bg-slate-800 overflow-hidden flex">
+                    <div class="bg-emerald-400 h-full" style="width: 59.5%"></div>
+                    <div class="bg-rose-400 h-full" style="width: 40.5%"></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-400 font-mono">
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Saved (NPR 56.5K)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Spent (NPR 38.4K)</span>
+                </div>
+            </div>
+
+            <!-- Visual Bar Metrics -->
+            <div class="glass-card p-4 rounded-3xl space-y-3">
+                <span class="text-xs font-bold text-white">Weekly Spend Velocity</span>
+                <div class="h-28 flex items-end justify-between gap-2 pt-2 px-1">
+                    <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-emerald-500/40 rounded-t-lg transition-all duration-500" style="height: 60%"></div>
+                        <span class="text-[10px] text-slate-400">W1</span>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-emerald-500/60 rounded-t-lg transition-all duration-500" style="height: 85%"></div>
+                        <span class="text-[10px] text-slate-400">W2</span>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-emerald-400 rounded-t-lg transition-all duration-500" style="height: 45%"></div>
+                        <span class="text-[10px] text-slate-400">W3</span>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-teal-400 rounded-t-lg transition-all duration-500" style="height: 70%"></div>
+                        <span class="text-[10px] text-slate-400">W4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deep Metric Cards -->
+            <div class="grid grid-cols-2 gap-2.5">
+                <div class="glass-panel p-3.5 rounded-2xl space-y-1">
+                    <span class="text-[11px] text-slate-400">Annual Projected</span>
+                    <p class="text-base font-bold text-emerald-400 font-mono">Rs. 1.14M</p>
+                    <span class="text-[10px] text-slate-400">Gross Inflow</span>
+                </div>
+                <div class="glass-panel p-3.5 rounded-2xl space-y-1">
+                    <span class="text-[11px] text-slate-400">Debt-To-Income</span>
+                    <p class="text-base font-bold text-cyan-400 font-mono">25.7%</p>
+                    <span class="text-[10px] text-emerald-400">Healthy Margin</span>
+                </div>
+            </div>
+
+            <a href="/app" class="block w-full py-3 text-center text-xs font-bold rounded-2xl bg-emerald-500 text-slate-950 shadow-lg btn-touch">
+                Open Full Analytics in App →
+            </a>
+        </section>
+
+
+        <!-- ================= SPA TAB 4: INSTALL & APP CENTER ================= -->
+        <section id="tab-install" class="spa-tab-content px-4 pt-3 space-y-4">
+            <div>
+                <span class="text-xs font-medium text-emerald-400">Progressive Web App</span>
+                <h2 class="text-lg font-bold text-white">Install Mobile App</h2>
+                <p class="text-xs text-slate-400">Install Dainik Arthiki directly on your phone home screen</p>
+            </div>
+
+            <!-- App Installation Status Card -->
+            <div class="glass-card-emerald p-5 rounded-3xl text-center space-y-3">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-xl shadow-emerald-500/25">
+                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                        <svg class="w-8 h-8 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-base font-bold text-white">Dainik Arthiki</h3>
+                    <p class="text-xs text-slate-300 font-mono">Version 2.4.0 • Native Web App</p>
+                </div>
+
+                <div id="pwa-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="pwa-status-text">Available for 1-Tap Installation</span>
+                </div>
+
+                <!-- Main Install Button -->
+                <button id="pwa-page-install-btn" class="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 btn-touch">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span id="pwa-btn-text">Install App on Phone</span>
+                </button>
+
+                <a href="/app" class="block text-xs font-semibold text-slate-400 hover:text-white pt-1">
+                    Or launch in browser dashboard →
+                </a>
+            </div>
+
+            <!-- Features Checklist -->
+            <div class="glass-card p-4 rounded-3xl space-y-2.5">
+                <span class="text-xs font-bold text-white uppercase tracking-wider">Installed App Advantages</span>
+                
+                <div class="flex items-center gap-3 text-xs text-slate-300">
+                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
+                    <span>Full-screen standalone interface without browser bars</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-slate-300">
+                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
+                    <span>Instant offline access to ledger records & calculator</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-slate-300">
+                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
+                    <span>Biometric FaceID / Fingerprint unlock via Passkeys</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-slate-300">
+                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
+                    <span>Zero app store downloads, ultra-low storage usage</span>
+                </div>
+            </div>
+
+            <!-- iOS Safari Instructions Accordion/Card -->
+            <div class="glass-card p-4 rounded-3xl space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm">🍎</span>
+                    <h4 class="text-xs font-bold text-white">Apple iPhone / iPad (Safari) Instructions</h4>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    1. Tap the <strong class="text-emerald-400">Share icon</strong> (box with arrow <span class="font-mono">[↑]</span>) at the bottom of Safari.<br>
+                    2. Scroll down and tap <strong class="text-emerald-400">"Add to Home Screen"</strong>.<br>
+                    3. Tap <strong class="text-emerald-400">"Add"</strong> in the top-right corner.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ================= BOTTOM SPA MOBILE NAVIGATION BAR ================= -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-3 pb-safe pointer-events-none">
+            <div class="w-full max-w-[440px] glass-panel px-3 py-2 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-around pointer-events-auto backdrop-blur-2xl">
+                
+                <!-- Tab: Home -->
+                <button onclick="switchTab('home')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-emerald-400 transition-all btn-touch" data-tab="home">
+                    <div class="relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="nav-indicator absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
+                    </div>
+                    <span class="text-[10px] font-bold">Home</span>
+                </button>
+
+                <!-- Tab: Decks -->
+                <button onclick="switchTab('decks')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="decks">
+                    <div class="relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        <span class="nav-indicator hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
+                    </div>
+                    <span class="text-[10px] font-bold">Decks</span>
+                </button>
+
+                <!-- Tab: Analytics -->
+                <button onclick="switchTab('analytics')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="analytics">
+                    <div class="relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="nav-indicator hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
+                    </div>
+                    <span class="text-[10px] font-bold">Insights</span>
+                </button>
+
+                <!-- Tab: Install -->
+                <button onclick="switchTab('install')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="install">
+                    <div class="relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span class="nav-indicator hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
+                    </div>
+                    <span class="text-[10px] font-bold">Install</span>
+                </button>
+
+            </div>
+        </nav>
+
     </div>
 
-    <nav>
-        <div class="nav-content">
-            <div class="nav-logo">💰 DainikArthiki</div>
-            <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
-                <span id="themeIcon">🌙</span>
-            </button>
-        </div>
-    </nav>
-
-    <section class="hero-section">
-        <div class="hero-content scroll-reveal">
-            <h1 class="hero-title">Master Your Finances</h1>
-            <p class="hero-subtitle">Track income and expenses with stunning visualizations. Take control of your financial future today.</p>
-            
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 3rem;">
-                <a href="{{ url('/app') }}" class="btn-primary">
-                    <span>Launch App</span>
-                    <span style="font-size: 1.2rem;">→</span>
-                </a>
-                <button class="btn-secondary scroll-to-features">
-                    <span>Learn More</span>
-                </button>
-            </div>
-
-            <div style="margin-top: 4rem; animation: bob 2s infinite;">
-                <div style="font-size: 2rem;">↓</div>
-                <p style="font-size: 0.9rem; opacity: 0.6;">Scroll to explore</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="features-section" id="features">
-        <div class="features-header">
-            <h2 class="features-heading">What Makes Us Different</h2>
-            <p class="features-subheading">Explore our core features designed to give you complete control over your finances</p>
-        </div>
-
-        <div class="interactive-features-grid">
-            <div class="interactive-card" data-feature="0">
-                <div class="card-glow"></div>
-                <div class="card-border"></div>
-                <div class="card-content">
-                    <div class="card-icon">📊</div>
-                    <h3 class="card-title">Real-time Analytics</h3>
-                    <p class="card-text">Visualize your finances with interactive charts and instant insights into spending patterns and income trends.</p>
-                </div>
-            </div>
-
-            <div class="interactive-card" data-feature="1">
-                <div class="card-glow"></div>
-                <div class="card-border"></div>
-                <div class="card-content">
-                    <div class="card-icon">🎯</div>
-                    <h3 class="card-title">Smart Budgets</h3>
-                    <p class="card-text">Set budgets that adapt to your spending habits and receive intelligent alerts before you exceed your limits.</p>
-                </div>
-            </div>
-
-            <div class="interactive-card" data-feature="2">
-                <div class="card-glow"></div>
-                <div class="card-border"></div>
-                <div class="card-content">
-                    <div class="card-icon">🔐</div>
-                    <h3 class="card-title">Enterprise Security</h3>
-                    <p class="card-text">Banking-grade encryption protects your data with advanced security protocols and zero compromise on privacy.</p>
-                </div>
-            </div>
-
-            <div class="interactive-card" data-feature="3">
-                <div class="card-glow"></div>
-                <div class="card-border"></div>
-                <div class="card-content">
-                    <div class="card-icon">📱</div>
-                    <h3 class="card-title">Omni-Device Sync</h3>
-                    <p class="card-text">Seamless synchronization across all your devices keeps your financial data up-to-date in real-time.</p>
-                </div>
-            </div>
-
-            <div class="interactive-card" data-feature="4">
-                <div class="card-glow"></div>
-                <div class="card-border"></div>
-                <div class="card-content">
-                    <div class="card-icon">💳</div>
-                    <h3 class="card-title">Custom Categories</h3>
-                    <p class="card-text">Create unlimited categories and tags to match your unique financial organization style perfectly.</p>
-                </div>
-            </div>
-
-            <div class="interactive-card" data-feature="5">
-                <div class="card-glow"></div>
-                <div class="card-border"></div>
-                <div class="card-content">
-                    <div class="card-icon">📈</div>
-                    <h3 class="card-title">AI Forecasting</h3>
-                    <p class="card-text">Predictive analytics powered by AI help you plan ahead and make smarter financial decisions with confidence.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="stats-section">
-        <div class="stat-card scroll-reveal">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Data Accuracy</div>
-        </div>
-        <div class="stat-card scroll-reveal" style="transition-delay: 0.1s;">
-            <div class="stat-number">24/7</div>
-            <div class="stat-label">Support Available</div>
-        </div>
-        <div class="stat-card scroll-reveal" style="transition-delay: 0.2s;">
-            <div class="stat-number">∞</div>
-            <div class="stat-label">Transactions</div>
-        </div>
-        <div class="stat-card scroll-reveal" style="transition-delay: 0.3s;">
-            <div class="stat-number">🛡️</div>
-            <div class="stat-label">Enterprise Security</div>
-        </div>
-    </section>
-
-    <section class="cta-section">
-        <div class="cta-background">
-            <div class="cta-orb-1"></div>
-            <div class="cta-orb-2"></div>
-        </div>
-        
-        <div class="cta-content scroll-reveal" style="max-width: 700px; margin: 0 auto;">
-            <h2 class="cta-title">Ready to Transform Your Finances?</h2>
-            <p class="cta-subtitle">Join thousands of users who are already managing their money smarter with intelligent insights and complete control.</p>
-            
-            <div class="cta-buttons">
-                <a href="{{ url('/app') }}" class="btn-primary">
-                    <span>Get Started Now</span>
-                    <span style="font-size: 1.2rem;">→</span>
-                </a>
-                <a href="{{ url('/app') }}" class="btn-secondary">
-                    <span>Launch Dashboard</span>
-                    <span style="font-size: 1.2rem;">→</span>
-                </a>
-            </div>
-            
-            <p class="cta-footer-text">No credit card required • Start for free • 30 days premium trial</p>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4 class="footer-brand">DainikArthiki</h4>
-                <p style="opacity: 0.7; margin-top: 0.5rem; font-size: 0.95rem;">Smart Finance Management System</p>
-            </div>
-            <div class="footer-section">
-                <p style="margin-bottom: 1rem; font-weight: 600;">Quick Links</p>
-                <p style="opacity: 0.7; margin: 0.5rem 0;"><a href="#" style="color: inherit; text-decoration: none; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px;">Features</a></p>
-                <p style="opacity: 0.7; margin: 0.5rem 0;"><a href="#" style="color: inherit; text-decoration: none; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px;">Security</a></p>
-                <p style="opacity: 0.7; margin: 0.5rem 0;"><a href="#" style="color: inherit; text-decoration: none; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px;">Support</a></p>
-            </div>
-            <div class="footer-section">
-                <p style="margin-bottom: 1rem; font-weight: 600;">Legal</p>
-                <p style="opacity: 0.7; margin: 0.5rem 0;"><a href="#" style="color: inherit; text-decoration: none; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px;">Privacy</a></p>
-                <p style="opacity: 0.7; margin: 0.5rem 0;"><a href="#" style="color: inherit; text-decoration: none; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px;">Terms</a></p>
-                <p style="opacity: 0.7; margin: 0.5rem 0;"><a href="#" style="color: inherit; text-decoration: none; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px;">Contact</a></p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 DainikArthiki. All rights reserved.</p>
-        </div>
-    </footer>
-
+    <!-- ================= JAVASCRIPT: SPA + THREE.JS + PWA LOGIC ================= -->
     <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        const themeIcon = document.getElementById('themeIcon');
+        // ----------------------------------------------------
+        // 1. SPA Bottom Tab Navigation
+        // ----------------------------------------------------
+        function switchTab(tabId) {
+            // Hide all tabs
+            const allTabs = document.querySelectorAll('.spa-tab-content');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
 
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        body.className = savedTheme + '-mode';
-        themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            // Show active tab
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                gsap.fromTo(targetTab, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" });
+            }
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.className === 'light-mode' ? 'dark' : 'light';
-            body.className = currentTheme + '-mode';
-            localStorage.setItem('theme', currentTheme);
-            themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        });
+            // Update bottom navigation buttons
+            const navButtons = document.querySelectorAll('.nav-tab-btn');
+            navButtons.forEach(btn => {
+                const isSelected = btn.getAttribute('data-tab') === tabId;
+                const indicator = btn.querySelector('.nav-indicator');
 
-        // Scroll Reveal Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
+                if (isSelected) {
+                    btn.classList.remove('text-slate-400');
+                    btn.classList.add('text-emerald-400');
+                    if (indicator) indicator.classList.remove('hidden');
+                } else {
+                    btn.classList.remove('text-emerald-400');
+                    btn.classList.add('text-slate-400');
+                    if (indicator) indicator.classList.add('hidden');
                 }
             });
-        }, observerOptions);
 
-        document.querySelectorAll('.scroll-reveal').forEach(el => {
-            observer.observe(el);
-        });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        // Smooth scroll to features
-        const scrollButton = document.querySelector('.scroll-to-features');
-        if (scrollButton) {
-            scrollButton.addEventListener('click', () => {
-                document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        // ----------------------------------------------------
+        // 2. Interactive Deck Accordion Toggle
+        // ----------------------------------------------------
+        function toggleDeck(deckElement) {
+            const details = deckElement.querySelector('.deck-details');
+            const isOpened = !details.classList.contains('hidden');
+
+            // Close all details first
+            document.querySelectorAll('.deck-details').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.deck-card').forEach(el => el.classList.remove('is-active'));
+
+            if (!isOpened) {
+                details.classList.remove('hidden');
+                deckElement.classList.add('is-active');
+                gsap.from(details, { opacity: 0, height: 0, duration: 0.25, ease: "power2.out" });
+            }
+        }
+
+        // ----------------------------------------------------
+        // 3. Balance Visibility Eye Toggle
+        // ----------------------------------------------------
+        let isBalanceHidden = false;
+        const toggleBtn = document.getElementById('toggle-balance-btn');
+        const balanceDisplay = document.getElementById('balance-display');
+        if (toggleBtn && balanceDisplay) {
+            toggleBtn.addEventListener('click', () => {
+                isBalanceHidden = !isBalanceHidden;
+                if (isBalanceHidden) {
+                    balanceDisplay.classList.add('blurred-amount');
+                } else {
+                    balanceDisplay.classList.remove('blurred-amount');
+                }
             });
         }
 
-        // Parallax Effect on Scroll
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            document.querySelectorAll('.floating-orb').forEach((orb, index) => {
-                const speed = (index + 1) * 0.5;
-                orb.style.transform = `translateY(${scrollY * speed}px)`;
+        // ----------------------------------------------------
+        // 4. Three.js 3D Interactive Emerald Emblem Coin
+        // ----------------------------------------------------
+        let scene, camera, renderer, coinMesh, particlesMesh;
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+
+        function initThreeCoin() {
+            const container = document.getElementById('coin-canvas-container');
+            if (!container) return;
+
+            const width = container.clientWidth || 380;
+            const height = 200;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Coin Geometry (Cylinder with bevel)
+            const geometry = new THREE.CylinderGeometry(1.6, 1.6, 0.22, 48);
+            
+            // Materials: Emerald gold metallic
+            const coinMaterial = new THREE.MeshStandardMaterial({
+                color: 0x10b981,
+                metalness: 0.85,
+                roughness: 0.22,
+                wireframe: false,
             });
-        });
 
-        // Button Click Particle Effect
-        function createParticles(event) {
-            const button = event.currentTarget;
-            const rect = button.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
+            coinMesh = new THREE.Mesh(geometry, coinMaterial);
+            coinMesh.rotation.x = 0.5;
+            coinMesh.rotation.y = 0.3;
+            scene.add(coinMesh);
 
-            for (let i = 0; i < 15; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'fixed';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                particle.style.width = '8px';
-                particle.style.height = '8px';
-                particle.style.backgroundColor = getComputedStyle(button).backgroundColor;
-                particle.style.borderRadius = '50%';
-                particle.style.pointerEvents = 'none';
-                particle.style.zIndex = '9999';
-                particle.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.5)';
-                
-                const angle = (Math.PI * 2 * i) / 15;
-                const velocity = 3 + Math.random() * 4;
-                const vx = Math.cos(angle) * velocity;
-                const vy = Math.sin(angle) * velocity;
-                
-                document.body.appendChild(particle);
+            // Golden / Cyan Inner Core Ring
+            const ringGeometry = new THREE.TorusGeometry(1.3, 0.05, 16, 64);
+            const ringMaterial = new THREE.MeshStandardMaterial({
+                color: 0x34d399,
+                metalness: 0.9,
+                roughness: 0.15,
+                emissive: 0x059669,
+                emissiveIntensity: 0.25
+            });
+            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            ring.rotation.x = Math.PI / 2;
+            coinMesh.add(ring);
 
-                let life = 1;
-                const startTime = performance.now();
-                
-                function animateParticle(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    life = Math.max(0, 1 - elapsed / 800);
-                    
-                    particle.style.left = (x + vx * (elapsed / 16)) + 'px';
-                    particle.style.top = (y + vy * (elapsed / 16) + (elapsed / 16) * 0.5) + 'px';
-                    particle.style.opacity = life;
-                    particle.style.transform = `scale(${life})`;
+            // Floating Light Particles
+            const particlesCount = 70;
+            const posArray = new Float32Array(particlesCount * 3);
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 8;
+            }
+            const particlesGeometry = new THREE.BufferGeometry();
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.04,
+                color: 0x34d399,
+                transparent: true,
+                opacity: 0.7
+            });
+            particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
 
-                    if (life > 0) {
-                        requestAnimationFrame(animateParticle);
-                    } else {
-                        particle.remove();
+            // Lighting Setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0x34d399, 3.5, 50);
+            pointLight.position.set(3, 4, 4);
+            scene.add(pointLight);
+
+            const rimLight = new THREE.PointLight(0x06b6d4, 2.5, 50);
+            rimLight.position.set(-3, -2, 2);
+            scene.add(rimLight);
+
+            // Mouse / Touch Interaction
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDragging || !coinMesh) return;
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+                coinMesh.rotation.y += deltaX * 0.01;
+                coinMesh.rotation.x += deltaY * 0.01;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            // Touch Drag Support for Mobile
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchend', () => { isDragging = false; });
+
+            container.addEventListener('touchmove', (e) => {
+                if (!isDragging || !coinMesh || e.touches.length !== 1) return;
+                const deltaX = e.touches[0].clientX - previousMousePosition.x;
+                const deltaY = e.touches[0].clientY - previousMousePosition.y;
+                coinMesh.rotation.y += deltaX * 0.012;
+                coinMesh.rotation.x += deltaY * 0.012;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }, { passive: true });
+
+            // Reset Button
+            const resetBtn = document.getElementById('reset-coin-btn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    gsap.to(coinMesh.rotation, { x: 0.5, y: 0.3, z: 0, duration: 0.8, ease: "power2.out" });
+                });
+            }
+
+            // Animation Loop
+            function animate() {
+                requestAnimationFrame(animate);
+                if (!isDragging && coinMesh) {
+                    coinMesh.rotation.y += 0.008;
+                    coinMesh.rotation.x += 0.002;
+                }
+                if (particlesMesh) {
+                    particlesMesh.rotation.y += 0.0015;
+                }
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize Observer
+            window.addEventListener('resize', () => {
+                if (!container || !renderer || !camera) return;
+                const newWidth = container.clientWidth;
+                camera.aspect = newWidth / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, height);
+            });
+        }
+
+        // ----------------------------------------------------
+        // 5. PWA Smart Installation Manager
+        // ----------------------------------------------------
+        let deferredPrompt = null;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        const smartBanner = document.getElementById('smart-install-banner');
+        const topBarInstallBtn = document.getElementById('top-bar-install-btn');
+        const bannerTrigger = document.getElementById('banner-install-trigger');
+        const bannerDismiss = document.getElementById('banner-dismiss-btn');
+        const pageInstallBtn = document.getElementById('pwa-page-install-btn');
+        const statusText = document.getElementById('pwa-status-text');
+        const btnText = document.getElementById('pwa-btn-text');
+
+        // Check standalone status
+        if (isStandalone) {
+            if (statusText) statusText.textContent = 'Active • Running in Standalone App Mode';
+            if (btnText) btnText.textContent = 'App Already Installed (Open Dashboard)';
+            if (pageInstallBtn) {
+                pageInstallBtn.onclick = () => { window.location.href = '/app'; };
+            }
+        } else {
+            // Listen for beforeinstallprompt event
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+
+                // Show top banner & button
+                if (smartBanner && !sessionStorage.getItem('pwa_banner_dismissed')) {
+                    smartBanner.classList.remove('hidden');
+                }
+                if (topBarInstallBtn) topBarInstallBtn.classList.remove('hidden');
+                if (topBarInstallBtn) topBarInstallBtn.classList.add('flex');
+            });
+
+            // Trigger prompt on button click
+            async function triggerInstallation() {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        if (smartBanner) smartBanner.classList.add('hidden');
+                        if (topBarInstallBtn) topBarInstallBtn.classList.add('hidden');
                     }
+                    deferredPrompt = null;
+                } else if (isIos) {
+                    switchTab('install');
+                    alert('To install on iOS:\n1. Tap the Share button [↑] at the bottom of Safari.\n2. Tap "Add to Home Screen".');
+                } else {
+                    switchTab('install');
                 }
-                
-                requestAnimationFrame(animateParticle);
             }
+
+            if (bannerTrigger) bannerTrigger.addEventListener('click', triggerInstallation);
+            if (topBarInstallBtn) topBarInstallBtn.addEventListener('click', triggerInstallation);
+            if (pageInstallBtn) pageInstallBtn.addEventListener('click', triggerInstallation);
+
+            if (bannerDismiss) {
+                bannerDismiss.addEventListener('click', () => {
+                    if (smartBanner) smartBanner.classList.add('hidden');
+                    sessionStorage.setItem('pwa_banner_dismissed', 'true');
+                });
+            }
+
+            window.addEventListener('appinstalled', () => {
+                if (smartBanner) smartBanner.classList.add('hidden');
+                if (topBarInstallBtn) topBarInstallBtn.classList.add('hidden');
+                if (statusText) statusText.textContent = 'Successfully Installed!';
+                deferredPrompt = null;
+            });
         }
 
-        // Add particle effect to all buttons
-        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
-            button.addEventListener('click', createParticles);
-            
-            // Glow effect on hover
-            button.addEventListener('mouseenter', function() {
-                this.style.boxShadow = '0 20px 60px rgba(16, 185, 129, 0.4)';
-            });
-            
-            button.addEventListener('mouseleave', function() {
-                this.style.boxShadow = '';
-            });
-        });
+        // Live Greeting Time
+        const greetingEl = document.getElementById('live-time-greeting');
+        if (greetingEl) {
+            const hour = new Date().getHours();
+            let greeting = 'Namaste 🙏';
+            if (hour < 12) greeting = 'Subha Bihani (Good Morning) ☀️';
+            else if (hour < 17) greeting = 'Good Afternoon 🌤️';
+            else greeting = 'Good Evening 🌙';
+            greetingEl.textContent = greeting;
+        }
 
-        // Dynamic Background Glow Following Cursor
-        document.addEventListener('mousemove', (e) => {
-            const floatingOrbs = document.querySelectorAll('.floating-orb');
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            floatingOrbs.forEach((orb, index) => {
-                const speed = (index + 1) * 0.02;
-                const offsetX = x * 50 * speed;
-                const offsetY = y * 50 * speed;
-                orb.style.setProperty('--offset-x', offsetX + 'px');
-                orb.style.setProperty('--offset-y', offsetY + 'px');
-            });
-        });
-
-        // Add CSS variable support for cursor tracking
+        // Initialize Three.js Coin on DOM load
         document.addEventListener('DOMContentLoaded', () => {
-            const style = document.createElement('style');
-            style.textContent = `
-                .floating-orb {
-                    --offset-x: 0px;
-                    --offset-y: 0px;
-                }
-            `;
-            document.head.appendChild(style);
-        });
-
-        // Typing effect on page load
-        function typeWriter(element, text, speed = 50) {
-            element.textContent = '';
-            let i = 0;
-            
-            function type() {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            
-            type();
-        }
-
-        // Enhanced scroll animations
-        const sections = document.querySelectorAll('section');
-        window.addEventListener('scroll', () => {
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                const isVisible = sectionTop < window.innerHeight * 0.8;
-                
-                if (isVisible) {
-                    section.style.opacity = Math.min(1, 1 - (sectionTop / (window.innerHeight * 2)));
-                }
-            });
-        });
-
-        // Initialize animations on page load
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '1';
-        });
-
-        // Mouse-following effects for interactive cards
-        const interactiveCards = document.querySelectorAll('.interactive-card');
-        
-        interactiveCards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                const mouseX = e.clientX - centerX;
-                const mouseY = e.clientY - centerY;
-                
-                const rotateX = (mouseY / rect.height) * 15;
-                const rotateY = (mouseX / rect.width) * 15;
-                
-                // Apply 3D tilt effect
-                card.style.transform = `perspective(1000px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-                
-                // Update shadow position to follow cursor
-                const shadowX = (mouseX / rect.width) * 20;
-                const shadowY = (mouseY / rect.height) * 20;
-                card.style.boxShadow = `${shadowX}px ${shadowY}px 40px rgba(16, 185, 129, 0.25)`;
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                // Reset transform and shadow on mouse leave
-                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
-                card.style.boxShadow = '0 10px 30px rgba(16, 185, 129, 0.1)';
-            });
-            
-            card.addEventListener('mouseenter', () => {
-                card.style.boxShadow = '0 20px 60px rgba(16, 185, 129, 0.2)';
-            });
-        });
-
-        // Add smooth scroll reveal for feature cards
-        const featureCardObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.1 });
-
-        interactiveCards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            featureCardObserver.observe(card);
+            initThreeCoin();
         });
     </script>
 </body>

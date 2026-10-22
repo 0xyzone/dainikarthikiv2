@@ -140,3 +140,4 @@ hot
 public/hot
 /public/hot
 public/storage
+.phpunit.result.cache
