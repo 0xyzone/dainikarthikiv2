@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>{{ config('app.name', 'Dainik Arthiki') }} - Mobile Finance App</title>
+    <title>{{ config('app.name', 'Dainik Arthiki') }} - Smart Personal & Business Finance OS</title>
     
     @include('filament.pwa-head')
     
@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS CDN for instant styling -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,7 +27,7 @@
                             950: '#022c22',
                         },
                         slate: {
-                            850: '#111827',
+                            850: '#0e1424',
                             900: '#0b0f19',
                             950: '#060911',
                         }
@@ -41,21 +41,19 @@
         }
     </script>
 
-    <!-- Three.js for 3D Interactive Coin / Centerpiece -->
+    <!-- Three.js for 3D Interactive Emblem -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- GSAP for Smooth Fluid Motion -->
+    <!-- GSAP for Smooth Motion Transitions -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <style>
         :root {
-            --app-max-width: 440px;
-            --safe-bottom: env(safe-area-inset-bottom, 16px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
             --safe-top: env(safe-area-inset-top, 16px);
         }
 
         * {
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
             box-sizing: border-box;
         }
 
@@ -67,87 +65,76 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            min-height: -webkit-fill-available;
         }
 
-        /* Glassmorphism Utilities */
+        /* Glassmorphic Layering */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(11, 15, 25, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .glass-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(52, 211, 153, 0.3);
+            transform: translateY(-2px);
         }
 
         .glass-card-emerald {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(6, 78, 59, 0.25) 100%);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(52, 211, 153, 0.22);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 78, 59, 0.18) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(52, 211, 153, 0.25);
         }
 
-        /* Ambient Glow Background */
+        /* Subtle Ambient Glow Orbs */
         .glow-orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(90px);
+            filter: blur(120px);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.35;
+            opacity: 0.28;
         }
 
-        /* Native App Scroll Container */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Tactile Press Feedback */
+        /* Tactile Press Physics */
         .btn-touch {
-            transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.12s ease;
+            transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease, border-color 0.15s ease;
         }
         .btn-touch:active {
-            transform: scale(0.96);
-            opacity: 0.88;
+            transform: scale(0.97);
         }
 
-        /* 3D Canvas Box */
+        /* 3D Canvas Container */
         #coin-canvas-container {
             width: 100%;
-            height: 200px;
-            position: relative;
+            height: 280px;
             cursor: grab;
         }
         #coin-canvas-container:active {
             cursor: grabbing;
         }
 
+        @media (min-width: 1024px) {
+            #coin-canvas-container {
+                height: 380px;
+            }
+        }
+
         /* Bottom Nav Safe Padding */
         .pb-safe {
-            padding-bottom: calc(var(--safe-bottom) + 5rem);
+            padding-bottom: calc(var(--safe-bottom) + 5.5rem);
         }
 
-        /* Card Deck Stack Transitions */
-        .deck-card {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: center top;
-        }
-        .deck-card.is-active {
-            transform: translateY(0) scale(1) !important;
-            border-color: rgba(52, 211, 153, 0.4) !important;
-            box-shadow: 0 15px 35px -5px rgba(16, 185, 129, 0.25);
-        }
-
-        /* SPA Tab Fade & Slide */
+        /* SPA Tab Transitions */
         .spa-tab-content {
             display: none;
             opacity: 0;
@@ -159,82 +146,108 @@
             transform: translateY(0);
         }
 
-        /* Balance Hide Blur */
-        .blurred-amount {
-            filter: blur(8px);
-            transition: filter 0.25s ease;
+        /* Feature Card Decks */
+        .feature-deck-btn.active {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
         }
     </style>
 </head>
 
-<body class="flex justify-center bg-slate-950 text-slate-100">
+<body class="relative min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
 
-    <!-- Ambient Glow Orbs -->
-    <div class="glow-orb w-72 h-72 bg-emerald-500 top-[-60px] left-[-60px]"></div>
-    <div class="glow-orb w-80 h-80 bg-teal-600 top-[35%] right-[-80px]"></div>
-    <div class="glow-orb w-72 h-72 bg-cyan-600 bottom-[80px] left-[-40px]"></div>
+    <!-- Ambient Ambient Glow Backdrop -->
+    <div class="glow-orb w-[500px] h-[500px] bg-emerald-500 top-[-100px] left-[-100px]"></div>
+    <div class="glow-orb w-[600px] h-[600px] bg-teal-600 top-[30%] right-[-150px]"></div>
+    <div class="glow-orb w-[500px] h-[500px] bg-cyan-600 bottom-[-100px] left-[20%]"></div>
 
-    <!-- Main Mobile App Shell Frame -->
-    <div class="relative z-10 w-full max-w-[460px] min-h-screen flex flex-col bg-slate-900/90 border-x border-slate-800/60 shadow-2xl pb-safe">
+    <!-- Main Full-Width App Shell -->
+    <div class="relative z-10 w-full flex flex-col flex-1 pb-safe">
 
-        <!-- ================= TOP APP BAR ================= -->
-        <header class="sticky top-0 z-40 px-4 pt-3 pb-3 glass-panel border-b border-white/5 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
-                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
+        <!-- ================= TOP NAVIGATION BAR ================= -->
+        <header class="sticky top-0 z-40 w-full glass-panel border-b border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+                
+                <!-- Brand / Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-base font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
+                            Dainik Arthiki
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        </span>
+                        <p class="text-[11px] font-medium text-slate-400 mt-0.5">Personal & Business Finance System</p>
                     </div>
                 </div>
-                <div>
-                    <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
-                        Dainik Arthiki
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    </h1>
-                    <p class="text-[10px] font-medium text-slate-400 mt-0.5">Finance Operating System</p>
+
+                <!-- Desktop Desktop Tabs Navigation Links -->
+                <div class="hidden md:flex items-center gap-1 glass-card px-2 py-1 rounded-2xl border border-white/10">
+                    <button onclick="switchTab('overview')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-emerald-400 transition" data-tab="overview">
+                        Overview
+                    </button>
+                    <button onclick="switchTab('modules')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition" data-tab="modules">
+                        Core Modules
+                    </button>
+                    <button onclick="switchTab('security')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition" data-tab="security">
+                        Security & Privacy
+                    </button>
+                    <button onclick="switchTab('install')" class="nav-tab-desktop px-4 py-1.5 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition" data-tab="install">
+                        Mobile App (PWA)
+                    </button>
                 </div>
-            </div>
 
-            <div class="flex items-center gap-2">
-                <!-- Install Button in Top Bar (visible when installable) -->
-                <button id="top-bar-install-btn" class="hidden items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 btn-touch">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                    <span>Install</span>
-                </button>
+                <!-- Auth Action Buttons (Prompts users to signup) -->
+                <div class="flex items-center gap-2.5">
+                    <!-- Install Prompt Button (visible when browser supports PWA) -->
+                    <button id="top-bar-install-btn" class="hidden items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 btn-touch">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span>Install App</span>
+                    </button>
 
-                <!-- Launch App / Login Button -->
-                <a href="/app" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/30 flex items-center gap-1 btn-touch">
-                    <span>Open App</span>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
+                    <a href="/app/login" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white border border-white/10 hover:bg-white/5 transition btn-touch">
+                        Sign In
+                    </a>
+
+                    <a href="/app/register" class="px-4 py-1.5 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 flex items-center gap-1.5 btn-touch">
+                        <span>Get Started Free</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </header>
 
         <!-- ================= SMART PWA INSTALL BANNER ================= -->
-        <div id="smart-install-banner" class="hidden px-4 pt-3 pb-1">
-            <div class="glass-card-emerald p-3 rounded-2xl flex items-center justify-between gap-3 shadow-lg">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center shrink-0">
-                        <span class="text-lg">📲</span>
+        <div id="smart-install-banner" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 w-full">
+            <div class="glass-card-emerald p-4 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center shrink-0 text-xl">
+                        📲
                     </div>
-                    <div class="leading-tight">
-                        <div class="text-xs font-bold text-white flex items-center gap-1">
-                            Install Dainik Arthiki
-                        </div>
-                        <p class="text-[11px] text-slate-300">Fast 1-tap launch & offline usage</p>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                            Install Dainik Arthiki on Your Device
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 font-mono">PWA Offline</span>
+                        </h4>
+                        <p class="text-[11px] sm:text-xs text-slate-300">Enjoy instant 1-tap launch, offline entry, and zero app store clutter.</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <button id="banner-install-trigger" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-400 text-slate-950 hover:bg-emerald-300 shadow-md btn-touch">
-                        Install
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button id="banner-install-trigger" class="flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-xl bg-emerald-400 text-slate-950 hover:bg-emerald-300 shadow-md btn-touch">
+                        Install Now
                     </button>
-                    <button id="banner-dismiss-btn" class="p-1.5 text-slate-400 hover:text-white rounded-lg">
+                    <button id="banner-dismiss-btn" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/5 transition" title="Dismiss">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -244,533 +257,433 @@
         </div>
 
 
-        <!-- ================= SPA TAB 1: HOME FEED ================= -->
-        <main id="tab-home" class="spa-tab-content active px-4 pt-3 space-y-4">
+        <!-- ================= CONTENT AREA (SPA TABS) ================= -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-4 lg:pt-8 flex-1">
 
-            <!-- Native User / Quick Stats Greeting -->
-            <div class="flex items-center justify-between pt-1">
-                <div>
-                    <span class="text-xs font-medium text-slate-400" id="live-time-greeting">Namaste 🙏</span>
-                    <h2 class="text-lg font-bold text-white tracking-tight">Financial Overview</h2>
-                </div>
-                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-semibold text-emerald-400">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span>Cloud Synced</span>
-                </div>
-            </div>
-
-            <!-- Main Wallet / Balance Master Card -->
-            <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-slate-800/90 via-slate-900 to-slate-950 border border-white/10 shadow-xl">
-                <!-- Card Background Pattern -->
-                <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-emerald-500/15 blur-2xl pointer-events-none"></div>
-                <div class="absolute right-4 bottom-4 opacity-10">
-                    <svg class="w-24 h-24 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="2" y="5" width="20" height="14" rx="3"></rect>
-                        <line x1="2" y1="10" x2="22" y2="10"></line>
-                    </svg>
-                </div>
-
-                <div class="relative z-10 space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Net Balance</span>
-                        <button id="toggle-balance-btn" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition" title="Toggle visibility">
-                            <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-sm font-semibold text-emerald-400 font-mono">NPR</span>
-                        <h3 id="balance-display" class="text-3xl font-extrabold text-white tracking-tight font-mono">1,84,550.00</h3>
-                    </div>
-
-                    <!-- Flow Pill Breakdown -->
-                    <div class="grid grid-cols-2 gap-2.5 pt-1">
-                        <div class="p-2.5 rounded-2xl bg-white/[0.04] border border-white/5">
-                            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mb-0.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                <span>Monthly Income</span>
-                            </div>
-                            <p class="text-sm font-bold text-emerald-300 font-mono">+Rs. 95,000</p>
-                        </div>
-                        <div class="p-2.5 rounded-2xl bg-white/[0.04] border border-white/5">
-                            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mb-0.5">
-                                <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-                                <span>Monthly Expense</span>
-                            </div>
-                            <p class="text-sm font-bold text-rose-300 font-mono">-Rs. 38,450</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Action Grid (Tactile Touch Buttons) -->
-            <div class="grid grid-cols-4 gap-2 pt-1">
-                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
-                    <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-slate-200">Income</span>
-                </a>
-
-                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
-                    <div class="w-11 h-11 rounded-2xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-rose-400 group-hover:bg-rose-500 group-hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path>
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-slate-200">Expense</span>
-                </a>
-
-                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
-                    <div class="w-11 h-11 rounded-2xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center text-teal-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-slate-200">Credits</span>
-                </a>
-
-                <a href="/app" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl glass-card text-center btn-touch group">
-                    <div class="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-slate-200">EMIs</span>
-                </a>
-            </div>
-
-            <!-- ================= THREE.JS 3D INTERACTIVE ARTHIKI COIN ================= -->
-            <div class="relative glass-card rounded-3xl p-4 overflow-hidden border border-emerald-500/20">
-                <div class="flex items-center justify-between mb-1">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-white uppercase tracking-wider">Interactive 3D Emblem</span>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">Touch & Drag</span>
-                    </div>
-                    <span class="text-xs text-slate-400">WebGL 60FPS</span>
-                </div>
+            <!-- ================= SPA TAB 1: OVERVIEW & HERO ================= -->
+            <div id="tab-overview" class="spa-tab-content active space-y-12 lg:space-y-16">
                 
-                <div id="coin-canvas-container" class="rounded-2xl overflow-hidden flex items-center justify-center">
-                    <!-- Canvas injected by Three.js -->
-                </div>
+                <!-- Hero Section: Split Desktop / Mobile Stack -->
+                <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                    
+                    <!-- Left Column: Copy & Value Proposition -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span>Smart Daily Ledger & Loan Manager</span>
+                        </div>
 
-                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
-                    <span>Gyroscopic Coin Physics</span>
-                    <button id="reset-coin-btn" class="text-emerald-400 hover:text-emerald-300 font-medium btn-touch">Reset Position</button>
-                </div>
+                        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
+                            Take Complete Control of Your
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                                Incomes, Debts & EMIs
+                            </span>
+                        </h2>
+
+                        <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            Dainik Arthiki is your daily financial companion designed to track every income stream, control expenses, manage personal credits lent and borrowed, and calculate amortization for bank loan EMIs — with bank-grade privacy and full offline PWA support.
+                        </p>
+
+                        <!-- High-Converting Signup Prompts -->
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
+                            <a href="/app/register" class="w-full sm:w-auto px-7 py-3.5 text-sm font-bold rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 btn-touch">
+                                <span>Create Free Account</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                            <button onclick="switchTab('modules')" class="w-full sm:w-auto px-6 py-3.5 text-sm font-semibold rounded-2xl bg-white/5 hover:bg-white/10 text-white border border-white/10 flex items-center justify-center gap-2 btn-touch">
+                                <span>Explore Core Modules</span>
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Trust / Benefit Badges -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-white/10 text-left">
+                            <div class="flex items-center gap-2 text-xs text-slate-300">
+                                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">✓</span>
+                                <span>No Subscription Required</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-slate-300">
+                                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">✓</span>
+                                <span>Passkeys & 2FA Protected</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-slate-300">
+                                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">✓</span>
+                                <span>Works 100% Offline (PWA)</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Interactive Three.js 3D Emblem Stage -->
+                    <div class="lg:col-span-5 flex flex-col items-center">
+                        <div class="relative w-full glass-card p-6 rounded-3xl border border-emerald-500/20 shadow-2xl">
+                            
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider">Arthiki 3D Emblem</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">Touch & Drag</span>
+                                </div>
+                                <button id="reset-coin-btn" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium btn-touch">Reset</button>
+                            </div>
+
+                            <!-- 3D Canvas Injection -->
+                            <div id="coin-canvas-container" class="rounded-2xl overflow-hidden flex items-center justify-center"></div>
+
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                                <span>Gyroscopic Real-Time Physics</span>
+                                <span class="text-emerald-400 font-semibold">WebGL 60FPS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- Value Pillars Grid (Explaining What the System Does) -->
+                <section class="space-y-6">
+                    <div class="text-center max-w-2xl mx-auto space-y-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Why Dainik Arthiki?</span>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Built for Everyday Clarity</h3>
+                        <p class="text-xs sm:text-sm text-slate-400">A clean, dedicated operating system designed to eliminate financial anxiety and manual calculation mistakes.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+                        <!-- Pillar 1 -->
+                        <div class="glass-card p-6 rounded-3xl space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-xl">
+                                📊
+                            </div>
+                            <h4 class="text-base font-bold text-white">Income & Expense Balance</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Record daily expenses by custom categories and track your salary, dividends, and business profits with receipt image uploads.
+                            </p>
+                        </div>
+
+                        <!-- Pillar 2 -->
+                        <div class="glass-card p-6 rounded-3xl space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-teal-500/15 text-teal-400 border border-teal-500/20 flex items-center justify-center text-xl">
+                                🤝
+                            </div>
+                            <h4 class="text-base font-bold text-white">Peer Credits & Borrowings</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Never forget who borrowed money from you or when a payment is due. Track partial repayments and settle accounts seamlessly.
+                            </p>
+                        </div>
+
+                        <!-- Pillar 3 -->
+                        <div class="glass-card p-6 rounded-3xl space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-400 border border-amber-500/20 flex items-center justify-center text-xl">
+                                🏦
+                            </div>
+                            <h4 class="text-base font-bold text-white">Bank Loans & Auto-EMIs</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Enter loan amount, interest rate, and tenure. Dainik Arthiki automatically calculates your monthly EMI schedule and tracks installments.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Call to Action Banner -->
+                <section class="glass-card-emerald p-8 lg:p-12 rounded-3xl text-center space-y-5">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                        Ready to Take Control of Your Finances?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
+                        Sign up in less than 30 seconds. No credit card required. Experience passwordless biometric login and full offline access.
+                    </p>
+                    <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <a href="/app/register" class="w-full sm:w-auto px-8 py-3.5 text-sm font-bold rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 btn-touch">
+                            Register Your Account
+                        </a>
+                        <a href="/app/login" class="w-full sm:w-auto px-6 py-3.5 text-sm font-semibold rounded-2xl bg-white/10 hover:bg-white/15 text-white border border-white/10 btn-touch">
+                            Existing User Login
+                        </a>
+                    </div>
+                </section>
+
             </div>
 
-            <!-- Ledger Summary Highlights -->
-            <div class="space-y-2.5">
-                <div class="flex items-center justify-between px-1">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Active Ledger Highlights</h4>
-                    <button onclick="switchTab('decks')" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5">
-                        <span>View Decks</span>
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+
+            <!-- ================= SPA TAB 2: CORE MODULES & DECKS ================= -->
+            <div id="tab-modules" class="spa-tab-content space-y-8">
+                
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">System Architecture</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Interactive Module Decks</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Click any deck below to examine how Dainik Arthiki powers each area of your financial journey.</p>
+                </div>
+
+                <!-- Module Selector Tabs -->
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                    <button onclick="selectModuleDeck('income')" class="feature-deck-btn active px-4 py-2 rounded-2xl text-xs font-bold glass-card border border-white/10 transition btn-touch" data-deck="income">
+                        💵 Income Streams
+                    </button>
+                    <button onclick="selectModuleDeck('expenses')" class="feature-deck-btn px-4 py-2 rounded-2xl text-xs font-bold glass-card border border-white/10 transition btn-touch" data-deck="expenses">
+                        🛒 Expense Control
+                    </button>
+                    <button onclick="selectModuleDeck('credits')" class="feature-deck-btn px-4 py-2 rounded-2xl text-xs font-bold glass-card border border-white/10 transition btn-touch" data-deck="credits">
+                        🤝 Credits & Debts
+                    </button>
+                    <button onclick="selectModuleDeck('loans')" class="feature-deck-btn px-4 py-2 rounded-2xl text-xs font-bold glass-card border border-white/10 transition btn-touch" data-deck="loans">
+                        🏦 Loans & EMIs
                     </button>
                 </div>
 
-                <!-- Highlight Card 1: Credit Given -->
-                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between hover:border-emerald-500/30 transition btn-touch">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/20 flex items-center justify-center text-teal-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
+                <!-- Deck Card Display Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    
+                    <!-- Dynamic Deck Details Card -->
+                    <div id="module-deck-card" class="lg:col-span-8 glass-card p-6 sm:p-8 rounded-3xl border border-emerald-500/30 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span id="module-icon" class="text-3xl">💵</span>
+                                <div>
+                                    <h3 id="module-title" class="text-lg sm:text-xl font-bold text-white">Multi-Source Income Management</h3>
+                                    <p id="module-subtitle" class="text-xs text-emerald-400">Aggregate all cashflow channels in one verified ledger</p>
+                                </div>
+                            </div>
+                            <span id="module-badge" class="hidden sm:inline-block text-[11px] font-mono px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300">
+                                Real-Time Inflow
+                            </span>
                         </div>
-                        <div>
-                            <p class="text-xs font-bold text-white">Credits Given (To Collect)</p>
-                            <p class="text-[11px] text-slate-400">4 active counterparties</p>
+
+                        <p id="module-description" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Organize multiple income sources including monthly salary, freelance contracts, investment returns, and rental incomes. Attach transaction slips and date records to generate historical income trends and annual forecasting.
+                        </p>
+
+                        <!-- Key Capabilities List -->
+                        <div class="space-y-2.5 pt-2 border-t border-white/10">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Key Capabilities</span>
+                            <div id="module-capabilities" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Multiple custom income sources</div>
+                                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Receipt image storage disk</div>
+                                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Filter by source & date ranges</div>
+                                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Exportable monthly cashflow reports</div>
+                            </div>
+                        </div>
+
+                        <!-- CTA to register -->
+                        <div class="pt-4 flex flex-col sm:flex-row items-center gap-3">
+                            <a href="/app/register" class="w-full sm:w-auto px-6 py-2.5 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md btn-touch text-center">
+                                Start Tracking with This Module →
+                            </a>
+                            <a href="/app/login" class="text-xs font-semibold text-slate-400 hover:text-white">
+                                Sign In to existing dashboard
+                            </a>
                         </div>
                     </div>
-                    <div class="text-right font-mono">
-                        <p class="text-sm font-bold text-teal-400">Rs. 42,000</p>
-                        <span class="text-[10px] text-slate-400">Receivable</span>
+
+                    <!-- Right Quick Summary Column -->
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="glass-panel p-5 rounded-3xl space-y-3">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">All 4 Pillars Connected</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Unlike fragmented spreadsheets, your incomes, expenses, credit settlements, and loan installments talk to each other in one unified database.
+                            </p>
+                            <div class="pt-1">
+                                <a href="/app/register" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
+                                    <span>Experience the integration</span>
+                                    <span>→</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-5 rounded-3xl space-y-2">
+                            <div class="flex items-center gap-2 text-xs font-bold text-white">
+                                <span>⚡</span>
+                                <span>Instant Calculator</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Built-in amortized financial math automatically computes exact EMI installments based on decreasing balance formulas.
+                            </p>
+                        </div>
                     </div>
+
                 </div>
 
-                <!-- Highlight Card 2: Upcoming EMI -->
-                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between hover:border-amber-500/30 transition btn-touch">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white">Home Loan EMI Due</p>
-                            <p class="text-[11px] text-amber-300/80">Due in 5 days (Oct 28)</p>
-                        </div>
-                    </div>
-                    <div class="text-right font-mono">
-                        <p class="text-sm font-bold text-amber-400">Rs. 24,500</p>
-                        <span class="text-[10px] text-slate-400">Installment #14</span>
-                    </div>
-                </div>
             </div>
 
-            <!-- Instant PWA Offline & Passkey Alert Card -->
-            <div class="glass-card-emerald p-4 rounded-3xl space-y-3">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center shrink-0 text-emerald-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-bold text-white">Enterprise Security & Offline Ready</h4>
-                        <p class="text-[11px] text-slate-300 leading-snug mt-0.5">Protected with WebAuthn Passkeys, 2-Factor Authentication, and full offline caching.</p>
-                    </div>
+
+            <!-- ================= SPA TAB 3: SECURITY & PRIVACY ================= -->
+            <div id="tab-security" class="spa-tab-content space-y-8">
+                
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Privacy By Design</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Bank-Grade Protection & Privacy</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Your financial records belong solely to you. We do not sell data, track ads, or compromise privacy.</p>
                 </div>
-                <div class="flex items-center gap-2 pt-1">
-                    <a href="/app/register" class="flex-1 py-2 px-3 text-center text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md btn-touch">
-                        Create Free Account
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <div class="glass-card p-6 rounded-3xl space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-xl">
+                            🔑
+                        </div>
+                        <h3 class="text-base font-bold text-white">WebAuthn Passkeys</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Sign in securely using Apple TouchID, FaceID, or Windows Hello. Zero passwords to remember and complete immunity against credential leaks.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-500/15 text-teal-400 flex items-center justify-center text-xl">
+                            🛡️
+                        </div>
+                        <h3 class="text-base font-bold text-white">Two-Factor Authentication</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Reinforce your account with TOTP authenticator app support (Google Authenticator, Authy, Apple Passwords) and emergency recovery keys.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-xl">
+                            🔒
+                        </div>
+                        <h3 class="text-base font-bold text-white">Strict Row-Level Isolation</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Every single ledger entry is strictly query-scoped to your authenticated user account. Nobody else can ever see your balances or transactions.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Registration Promotion Card -->
+                <div class="glass-card-emerald p-8 rounded-3xl text-center space-y-4 max-w-3xl mx-auto">
+                    <h3 class="text-xl sm:text-2xl font-bold text-white">Your Financial Privacy is Non-Negotiable</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        Start keeping clean, organized records without worrying about telemetry or intrusive ad algorithms.
+                    </p>
+                    <a href="/app/register" class="inline-block px-7 py-3 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg btn-touch">
+                        Sign Up with Passkey Biometrics →
                     </a>
-                    <button onclick="switchTab('install')" class="py-2 px-3 text-xs font-semibold rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/10 btn-touch">
-                        Install Guide
-                    </button>
                 </div>
+
+            </div>
+
+
+            <!-- ================= SPA TAB 4: PWA MOBILE APP & INSTALL ================= -->
+            <div id="tab-install" class="spa-tab-content space-y-8">
+                
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Progressive Web App</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Install Dainik Arthiki App</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Install directly onto your iPhone, Android, iPad, Mac, or Windows PC without using an app store.</p>
+                </div>
+
+                <div class="max-w-xl mx-auto glass-card-emerald p-6 sm:p-8 rounded-3xl text-center space-y-5 shadow-2xl">
+                    
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-xl shadow-emerald-500/30">
+                        <div class="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center">
+                            <svg class="w-10 h-10 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Dainik Arthiki</h3>
+                        <p class="text-xs text-slate-300 font-mono">PWA Native Web App • Version 2.4.0</p>
+                    </div>
+
+                    <div id="pwa-status-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="pwa-status-text">Available for 1-Tap Installation</span>
+                    </div>
+
+                    <!-- Main Install Trigger Button -->
+                    <button id="pwa-page-install-btn" class="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2.5 btn-touch">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span id="pwa-btn-text">Install App on This Device</span>
+                    </button>
+
+                    <div class="pt-2 border-t border-white/10 flex items-center justify-center gap-4 text-xs">
+                        <a href="/app/register" class="text-emerald-400 font-bold hover:underline">Create Account</a>
+                        <span class="text-slate-500">•</span>
+                        <a href="/app/login" class="text-slate-300 hover:underline">Existing User Login</a>
+                    </div>
+                </div>
+
+                <!-- Installation Walkthroughs Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    
+                    <!-- Android & Chrome Walkthrough -->
+                    <div class="glass-card p-6 rounded-3xl space-y-3">
+                        <div class="flex items-center gap-2.5 text-emerald-400 font-bold text-sm">
+                            <span>🤖</span>
+                            <span>Android / Chrome / Edge</span>
+                        </div>
+                        <ol class="text-xs text-slate-300 space-y-2 list-decimal list-inside leading-relaxed">
+                            <li>Tap the <strong class="text-white">"Install App on This Device"</strong> button above.</li>
+                            <li>When the browser asks to install, tap <strong class="text-white">"Install"</strong> or <strong class="text-white">"Add"</strong>.</li>
+                            <li>The app icon will immediately appear on your home screen or app drawer.</li>
+                        </ol>
+                    </div>
+
+                    <!-- iOS Safari Walkthrough -->
+                    <div class="glass-card p-6 rounded-3xl space-y-3">
+                        <div class="flex items-center gap-2.5 text-cyan-400 font-bold text-sm">
+                            <span>🍎</span>
+                            <span>Apple iPhone & iPad (Safari)</span>
+                        </div>
+                        <ol class="text-xs text-slate-300 space-y-2 list-decimal list-inside leading-relaxed">
+                            <li>Tap the <strong class="text-white">Share button</strong> <span class="font-mono text-emerald-400">[↑]</span> at the bottom of Safari.</li>
+                            <li>Scroll down the share sheet and tap <strong class="text-white">"Add to Home Screen"</strong>.</li>
+                            <li>Tap <strong class="text-white">"Add"</strong> in the top-right corner to launch in standalone mode.</li>
+                        </ol>
+                    </div>
+
+                </div>
+
             </div>
 
         </main>
 
-
-        <!-- ================= SPA TAB 2: CARDS & DECKS ================= -->
-        <section id="tab-decks" class="spa-tab-content px-4 pt-3 space-y-4">
-            <div>
-                <span class="text-xs font-medium text-emerald-400">Tactile Modular Decks</span>
-                <h2 class="text-lg font-bold text-white">Your Financial Stacks</h2>
-                <p class="text-xs text-slate-400">Tap any deck to expand ledger details and transactions</p>
-            </div>
-
-            <!-- Deck Stack Interface Container -->
-            <div class="space-y-3" id="decks-container">
-
-                <!-- DECK 1: INCOME SOURCES DECK -->
-                <div class="deck-card glass-card p-4 rounded-3xl border border-emerald-500/30 cursor-pointer" onclick="toggleDeck(this)">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                                📈
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-white">Income Sources Deck</h3>
-                                <p class="text-[11px] text-slate-400">Primary Salary, Freelance, Dividends</p>
-                            </div>
-                        </div>
-                        <span class="text-xs font-mono font-bold text-emerald-400">+Rs. 95K/mo</span>
-                    </div>
-
-                    <!-- Expandable Details -->
-                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Tech Job Salary</span>
-                            <span class="font-mono text-white">Rs. 75,000</span>
-                        </div>
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Freelance Consulting</span>
-                            <span class="font-mono text-white">Rs. 15,000</span>
-                        </div>
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Stock Dividends</span>
-                            <span class="font-mono text-white">Rs. 5,000</span>
-                        </div>
-                        <div class="pt-2 flex gap-2">
-                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-emerald-500 text-slate-950 btn-touch">Manage Sources</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DECK 2: EXPENSES DECK -->
-                <div class="deck-card glass-card p-4 rounded-3xl border border-rose-500/30 cursor-pointer" onclick="toggleDeck(this)">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">
-                                🛒
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-white">Expense Control Deck</h3>
-                                <p class="text-[11px] text-slate-400">Groceries, Fuel, Utilities, Rent</p>
-                            </div>
-                        </div>
-                        <span class="text-xs font-mono font-bold text-rose-400">-Rs. 38.4K/mo</span>
-                    </div>
-
-                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Apartment Rent & Bills</span>
-                            <span class="font-mono text-white">Rs. 20,000</span>
-                        </div>
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Groceries & Market</span>
-                            <span class="font-mono text-white">Rs. 11,200</span>
-                        </div>
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Fuel & Transit</span>
-                            <span class="font-mono text-white">Rs. 7,250</span>
-                        </div>
-                        <div class="pt-2 flex gap-2">
-                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-rose-500 text-white btn-touch">Add Expense</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DECK 3: CREDITS & BORROWINGS DECK -->
-                <div class="deck-card glass-card p-4 rounded-3xl border border-teal-500/30 cursor-pointer" onclick="toggleDeck(this)">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
-                                🤝
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-white">Personal Credits Deck</h3>
-                                <p class="text-[11px] text-slate-400">Money lent to friends & counter-parties</p>
-                            </div>
-                        </div>
-                        <span class="text-xs font-mono font-bold text-teal-400">Rs. 42,000</span>
-                    </div>
-
-                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Ram Shrestha</span>
-                            <span class="font-mono text-emerald-400">Rs. 25,000 (To Receive)</span>
-                        </div>
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Sunil KC</span>
-                            <span class="font-mono text-emerald-400">Rs. 17,000 (To Receive)</span>
-                        </div>
-                        <div class="pt-2 flex gap-2">
-                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-teal-500 text-slate-950 btn-touch">Log Payment</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DECK 4: LOAN EMIS DECK -->
-                <div class="deck-card glass-card p-4 rounded-3xl border border-amber-500/30 cursor-pointer" onclick="toggleDeck(this)">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
-                                🏦
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-white">Bank Loans & EMIs</h3>
-                                <p class="text-[11px] text-slate-400">Auto-calculated amortization</p>
-                            </div>
-                        </div>
-                        <span class="text-xs font-mono font-bold text-amber-400">2 Active</span>
-                    </div>
-
-                    <div class="deck-details hidden mt-3 pt-3 border-t border-white/10 space-y-2">
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Home Mortgage (Nabil)</span>
-                            <span class="font-mono text-white">Rs. 24,500 / mo</span>
-                        </div>
-                        <div class="flex justify-between text-xs py-1">
-                            <span class="text-slate-400">Vehicle Loan (Global IME)</span>
-                            <span class="font-mono text-white">Rs. 12,300 / mo</span>
-                        </div>
-                        <div class="pt-2 flex gap-2">
-                            <a href="/app" class="flex-1 py-1.5 text-center text-xs font-semibold rounded-lg bg-amber-500 text-slate-950 btn-touch">View Schedule</a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- ================= SPA TAB 3: ANALYTICS ================= -->
-        <section id="tab-analytics" class="spa-tab-content px-4 pt-3 space-y-4">
-            <div>
-                <span class="text-xs font-medium text-emerald-400">Intelligent Insights</span>
-                <h2 class="text-lg font-bold text-white">Cashflow Analytics</h2>
-                <p class="text-xs text-slate-400">Monthly budget consumption and savings pace</p>
-            </div>
-
-            <!-- Savings Ratio Meter -->
-            <div class="glass-card p-4 rounded-3xl space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white">Savings Efficiency Ratio</span>
-                    <span class="text-xs font-mono font-bold text-emerald-400">59.5%</span>
-                </div>
-                <div class="w-full h-3 rounded-full bg-slate-800 overflow-hidden flex">
-                    <div class="bg-emerald-400 h-full" style="width: 59.5%"></div>
-                    <div class="bg-rose-400 h-full" style="width: 40.5%"></div>
-                </div>
-                <div class="flex justify-between text-[11px] text-slate-400 font-mono">
-                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Saved (NPR 56.5K)</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Spent (NPR 38.4K)</span>
-                </div>
-            </div>
-
-            <!-- Visual Bar Metrics -->
-            <div class="glass-card p-4 rounded-3xl space-y-3">
-                <span class="text-xs font-bold text-white">Weekly Spend Velocity</span>
-                <div class="h-28 flex items-end justify-between gap-2 pt-2 px-1">
-                    <div class="flex-1 flex flex-col items-center gap-1">
-                        <div class="w-full bg-emerald-500/40 rounded-t-lg transition-all duration-500" style="height: 60%"></div>
-                        <span class="text-[10px] text-slate-400">W1</span>
-                    </div>
-                    <div class="flex-1 flex flex-col items-center gap-1">
-                        <div class="w-full bg-emerald-500/60 rounded-t-lg transition-all duration-500" style="height: 85%"></div>
-                        <span class="text-[10px] text-slate-400">W2</span>
-                    </div>
-                    <div class="flex-1 flex flex-col items-center gap-1">
-                        <div class="w-full bg-emerald-400 rounded-t-lg transition-all duration-500" style="height: 45%"></div>
-                        <span class="text-[10px] text-slate-400">W3</span>
-                    </div>
-                    <div class="flex-1 flex flex-col items-center gap-1">
-                        <div class="w-full bg-teal-400 rounded-t-lg transition-all duration-500" style="height: 70%"></div>
-                        <span class="text-[10px] text-slate-400">W4</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Deep Metric Cards -->
-            <div class="grid grid-cols-2 gap-2.5">
-                <div class="glass-panel p-3.5 rounded-2xl space-y-1">
-                    <span class="text-[11px] text-slate-400">Annual Projected</span>
-                    <p class="text-base font-bold text-emerald-400 font-mono">Rs. 1.14M</p>
-                    <span class="text-[10px] text-slate-400">Gross Inflow</span>
-                </div>
-                <div class="glass-panel p-3.5 rounded-2xl space-y-1">
-                    <span class="text-[11px] text-slate-400">Debt-To-Income</span>
-                    <p class="text-base font-bold text-cyan-400 font-mono">25.7%</p>
-                    <span class="text-[10px] text-emerald-400">Healthy Margin</span>
-                </div>
-            </div>
-
-            <a href="/app" class="block w-full py-3 text-center text-xs font-bold rounded-2xl bg-emerald-500 text-slate-950 shadow-lg btn-touch">
-                Open Full Analytics in App →
-            </a>
-        </section>
-
-
-        <!-- ================= SPA TAB 4: INSTALL & APP CENTER ================= -->
-        <section id="tab-install" class="spa-tab-content px-4 pt-3 space-y-4">
-            <div>
-                <span class="text-xs font-medium text-emerald-400">Progressive Web App</span>
-                <h2 class="text-lg font-bold text-white">Install Mobile App</h2>
-                <p class="text-xs text-slate-400">Install Dainik Arthiki directly on your phone home screen</p>
-            </div>
-
-            <!-- App Installation Status Card -->
-            <div class="glass-card-emerald p-5 rounded-3xl text-center space-y-3">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-xl shadow-emerald-500/25">
-                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                        <svg class="w-8 h-8 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-base font-bold text-white">Dainik Arthiki</h3>
-                    <p class="text-xs text-slate-300 font-mono">Version 2.4.0 • Native Web App</p>
-                </div>
-
-                <div id="pwa-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-medium">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span id="pwa-status-text">Available for 1-Tap Installation</span>
-                </div>
-
-                <!-- Main Install Button -->
-                <button id="pwa-page-install-btn" class="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 btn-touch">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                    <span id="pwa-btn-text">Install App on Phone</span>
-                </button>
-
-                <a href="/app" class="block text-xs font-semibold text-slate-400 hover:text-white pt-1">
-                    Or launch in browser dashboard →
-                </a>
-            </div>
-
-            <!-- Features Checklist -->
-            <div class="glass-card p-4 rounded-3xl space-y-2.5">
-                <span class="text-xs font-bold text-white uppercase tracking-wider">Installed App Advantages</span>
+        <!-- ================= BOTTOM SPA MOBILE & DESKTOP DOCK NAVIGATION ================= -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-safe pointer-events-none">
+            <div class="glass-panel px-4 py-2.5 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-between sm:justify-center gap-2 sm:gap-6 pointer-events-auto backdrop-blur-2xl">
                 
-                <div class="flex items-center gap-3 text-xs text-slate-300">
-                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
-                    <span>Full-screen standalone interface without browser bars</span>
-                </div>
-                <div class="flex items-center gap-3 text-xs text-slate-300">
-                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
-                    <span>Instant offline access to ledger records & calculator</span>
-                </div>
-                <div class="flex items-center gap-3 text-xs text-slate-300">
-                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
-                    <span>Biometric FaceID / Fingerprint unlock via Passkeys</span>
-                </div>
-                <div class="flex items-center gap-3 text-xs text-slate-300">
-                    <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">✓</span>
-                    <span>Zero app store downloads, ultra-low storage usage</span>
-                </div>
-            </div>
-
-            <!-- iOS Safari Instructions Accordion/Card -->
-            <div class="glass-card p-4 rounded-3xl space-y-2">
-                <div class="flex items-center gap-2">
-                    <span class="text-sm">🍎</span>
-                    <h4 class="text-xs font-bold text-white">Apple iPhone / iPad (Safari) Instructions</h4>
-                </div>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    1. Tap the <strong class="text-emerald-400">Share icon</strong> (box with arrow <span class="font-mono">[↑]</span>) at the bottom of Safari.<br>
-                    2. Scroll down and tap <strong class="text-emerald-400">"Add to Home Screen"</strong>.<br>
-                    3. Tap <strong class="text-emerald-400">"Add"</strong> in the top-right corner.
-                </p>
-            </div>
-        </section>
-
-
-        <!-- ================= BOTTOM SPA MOBILE NAVIGATION BAR ================= -->
-        <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-3 pb-safe pointer-events-none">
-            <div class="w-full max-w-[440px] glass-panel px-3 py-2 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-around pointer-events-auto backdrop-blur-2xl">
-                
-                <!-- Tab: Home -->
-                <button onclick="switchTab('home')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-emerald-400 transition-all btn-touch" data-tab="home">
+                <!-- Tab: Overview -->
+                <button onclick="switchTab('overview')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 sm:px-4 rounded-2xl text-emerald-400 transition-all btn-touch" data-tab="overview">
                     <div class="relative">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
                         <span class="nav-indicator absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
                     </div>
-                    <span class="text-[10px] font-bold">Home</span>
+                    <span class="text-[10px] font-bold">Overview</span>
                 </button>
 
-                <!-- Tab: Decks -->
-                <button onclick="switchTab('decks')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="decks">
+                <!-- Tab: Modules / Decks -->
+                <button onclick="switchTab('modules')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 sm:px-4 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="modules">
                     <div class="relative">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
                         <span class="nav-indicator hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
                     </div>
-                    <span class="text-[10px] font-bold">Decks</span>
+                    <span class="text-[10px] font-bold">Modules</span>
                 </button>
 
-                <!-- Tab: Analytics -->
-                <button onclick="switchTab('analytics')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="analytics">
+                <!-- Tab: Security -->
+                <button onclick="switchTab('security')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 sm:px-4 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="security">
                     <div class="relative">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                         </svg>
                         <span class="nav-indicator hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400"></span>
                     </div>
-                    <span class="text-[10px] font-bold">Insights</span>
+                    <span class="text-[10px] font-bold">Security</span>
                 </button>
 
-                <!-- Tab: Install -->
-                <button onclick="switchTab('install')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="install">
+                <!-- Tab: Install / App -->
+                <button onclick="switchTab('install')" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-3 sm:px-4 rounded-2xl text-slate-400 transition-all btn-touch" data-tab="install">
                     <div class="relative">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -788,7 +701,96 @@
     <!-- ================= JAVASCRIPT: SPA + THREE.JS + PWA LOGIC ================= -->
     <script>
         // ----------------------------------------------------
-        // 1. SPA Bottom Tab Navigation
+        // 1. Module Decks Data & Switching
+        // ----------------------------------------------------
+        const moduleData = {
+            income: {
+                icon: "💵",
+                title: "Multi-Source Income Management",
+                subtitle: "Aggregate all cashflow channels in one verified ledger",
+                badge: "Real-Time Inflow",
+                description: "Organize multiple income sources including monthly salary, freelance contracts, investment returns, and rental incomes. Attach transaction slips and date records to generate historical income trends and annual forecasting.",
+                capabilities: [
+                    "Multiple custom income sources",
+                    "Receipt image storage disk",
+                    "Filter by source & date ranges",
+                    "Exportable monthly cashflow reports"
+                ]
+            },
+            expenses: {
+                icon: "🛒",
+                title: "Disciplined Expense Control",
+                subtitle: "Category-level tracking with intelligent budgets",
+                badge: "Outflow Sentinel",
+                description: "Categorize every expense from groceries and housing to vehicle maintenance. Establish category ceilings and receive visual warnings before you exceed your monthly limits.",
+                capabilities: [
+                    "Categorized expenditure logs",
+                    "Automatic daily expense sorting",
+                    "Expense receipt attachment",
+                    "Income-to-Expense ratio metrics"
+                ]
+            },
+            credits: {
+                icon: "🤝",
+                title: "Peer-to-Peer Credits & Debts",
+                subtitle: "Track money lent to and borrowed from counterparties",
+                badge: "Zero Unpaid Debts",
+                description: "Keep dedicated ledgers for money lent to friends, relatives, or business associates (receivables) and personal borrowings (payables). Record partial repayments with settlement history.",
+                capabilities: [
+                    "Individual counterparty profiles",
+                    "Partial payment installment logging",
+                    "Due date alerts & pending summaries",
+                    "One-tap account balance settlement"
+                ]
+            },
+            loans: {
+                icon: "🏦",
+                title: "Bank Loans & Amortization Scheduler",
+                subtitle: "Decreasing balance EMI math and payment calendar",
+                badge: "Smart Amortization",
+                description: "Input bank loans with principal, interest rate, and tenure in months. The system automatically calculates your monthly EMI and tracks pending vs. paid installments.",
+                capabilities: [
+                    "Auto-calculated decreasing balance EMI",
+                    "Upcoming installment reminders",
+                    "Active vs. closed loan archives",
+                    "Lender bank and reference tracking"
+                ]
+            }
+        };
+
+        function selectModuleDeck(key) {
+            const data = moduleData[key];
+            if (!data) return;
+
+            // Update button styles
+            document.querySelectorAll('.feature-deck-btn').forEach(btn => {
+                if (btn.getAttribute('data-deck') === key) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Update details
+            document.getElementById('module-icon').textContent = data.icon;
+            document.getElementById('module-title').textContent = data.title;
+            document.getElementById('module-subtitle').textContent = data.subtitle;
+            document.getElementById('module-badge').textContent = data.badge;
+            document.getElementById('module-description').textContent = data.description;
+
+            const capsEl = document.getElementById('module-capabilities');
+            capsEl.innerHTML = data.capabilities.map(cap => `
+                <div class="flex items-center gap-2">
+                    <span class="text-emerald-400 font-bold">✓</span> ${cap}
+                </div>
+            `).join('');
+
+            // Animate card entrance
+            gsap.fromTo('#module-deck-card', { opacity: 0.8, y: 8 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" });
+        }
+
+        // ----------------------------------------------------
+        // 2. SPA Tab Navigation
         // ----------------------------------------------------
         function switchTab(tabId) {
             // Hide all tabs
@@ -801,7 +803,7 @@
             const targetTab = document.getElementById('tab-' + tabId);
             if (targetTab) {
                 targetTab.classList.add('active');
-                gsap.fromTo(targetTab, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" });
+                gsap.fromTo(targetTab, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" });
             }
 
             // Update bottom navigation buttons
@@ -821,133 +823,105 @@
                 }
             });
 
+            // Update desktop top navigation
+            const desktopButtons = document.querySelectorAll('.nav-tab-desktop');
+            desktopButtons.forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.remove('text-slate-400');
+                    btn.classList.add('text-emerald-400');
+                } else {
+                    btn.classList.remove('text-emerald-400');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ----------------------------------------------------
-        // 2. Interactive Deck Accordion Toggle
-        // ----------------------------------------------------
-        function toggleDeck(deckElement) {
-            const details = deckElement.querySelector('.deck-details');
-            const isOpened = !details.classList.contains('hidden');
-
-            // Close all details first
-            document.querySelectorAll('.deck-details').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.deck-card').forEach(el => el.classList.remove('is-active'));
-
-            if (!isOpened) {
-                details.classList.remove('hidden');
-                deckElement.classList.add('is-active');
-                gsap.from(details, { opacity: 0, height: 0, duration: 0.25, ease: "power2.out" });
-            }
-        }
-
-        // ----------------------------------------------------
-        // 3. Balance Visibility Eye Toggle
-        // ----------------------------------------------------
-        let isBalanceHidden = false;
-        const toggleBtn = document.getElementById('toggle-balance-btn');
-        const balanceDisplay = document.getElementById('balance-display');
-        if (toggleBtn && balanceDisplay) {
-            toggleBtn.addEventListener('click', () => {
-                isBalanceHidden = !isBalanceHidden;
-                if (isBalanceHidden) {
-                    balanceDisplay.classList.add('blurred-amount');
-                } else {
-                    balanceDisplay.classList.remove('blurred-amount');
-                }
-            });
-        }
-
-        // ----------------------------------------------------
-        // 4. Three.js 3D Interactive Emerald Emblem Coin
+        // 3. Three.js 3D Interactive Emblem
         // ----------------------------------------------------
         let scene, camera, renderer, coinMesh, particlesMesh;
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
 
-        function initThreeCoin() {
+        function initThreeEmblem() {
             const container = document.getElementById('coin-canvas-container');
             if (!container) return;
 
             const width = container.clientWidth || 380;
-            const height = 200;
+            const height = container.clientHeight || 280;
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-            camera.position.z = 5;
+            camera.position.z = 5.2;
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(width, height);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // Coin Geometry (Cylinder with bevel)
-            const geometry = new THREE.CylinderGeometry(1.6, 1.6, 0.22, 48);
-            
-            // Materials: Emerald gold metallic
+            // Coin Mesh (Metallic Emerald Emblem)
+            const geometry = new THREE.CylinderGeometry(1.65, 1.65, 0.22, 64);
             const coinMaterial = new THREE.MeshStandardMaterial({
                 color: 0x10b981,
-                metalness: 0.85,
-                roughness: 0.22,
-                wireframe: false,
+                metalness: 0.88,
+                roughness: 0.20,
             });
 
             coinMesh = new THREE.Mesh(geometry, coinMaterial);
-            coinMesh.rotation.x = 0.5;
-            coinMesh.rotation.y = 0.3;
+            coinMesh.rotation.x = 0.45;
+            coinMesh.rotation.y = 0.35;
             scene.add(coinMesh);
 
-            // Golden / Cyan Inner Core Ring
-            const ringGeometry = new THREE.TorusGeometry(1.3, 0.05, 16, 64);
+            // Inner Holographic Torus Ring
+            const ringGeometry = new THREE.TorusGeometry(1.35, 0.05, 16, 64);
             const ringMaterial = new THREE.MeshStandardMaterial({
                 color: 0x34d399,
-                metalness: 0.9,
-                roughness: 0.15,
+                metalness: 0.95,
+                roughness: 0.12,
                 emissive: 0x059669,
-                emissiveIntensity: 0.25
+                emissiveIntensity: 0.35
             });
             const ring = new THREE.Mesh(ringGeometry, ringMaterial);
             ring.rotation.x = Math.PI / 2;
             coinMesh.add(ring);
 
-            // Floating Light Particles
-            const particlesCount = 70;
+            // Floating Ambient Particles
+            const particlesCount = 80;
             const posArray = new Float32Array(particlesCount * 3);
             for (let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 8;
+                posArray[i] = (Math.random() - 0.5) * 10;
             }
             const particlesGeometry = new THREE.BufferGeometry();
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.04,
+                size: 0.045,
                 color: 0x34d399,
                 transparent: true,
-                opacity: 0.7
+                opacity: 0.65
             });
             particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
             scene.add(particlesMesh);
 
-            // Lighting Setup
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
             scene.add(ambientLight);
 
-            const pointLight = new THREE.PointLight(0x34d399, 3.5, 50);
-            pointLight.position.set(3, 4, 4);
+            const pointLight = new THREE.PointLight(0x34d399, 3.5, 60);
+            pointLight.position.set(4, 5, 5);
             scene.add(pointLight);
 
-            const rimLight = new THREE.PointLight(0x06b6d4, 2.5, 50);
-            rimLight.position.set(-3, -2, 2);
+            const rimLight = new THREE.PointLight(0x06b6d4, 2.8, 60);
+            rimLight.position.set(-4, -3, 3);
             scene.add(rimLight);
 
-            // Mouse / Touch Interaction
+            // Mouse / Drag Controls
             container.addEventListener('mousedown', (e) => {
                 isDragging = true;
                 previousMousePosition = { x: e.clientX, y: e.clientY };
             });
-
             window.addEventListener('mouseup', () => { isDragging = false; });
-
             container.addEventListener('mousemove', (e) => {
                 if (!isDragging || !coinMesh) return;
                 const deltaX = e.clientX - previousMousePosition.x;
@@ -957,16 +931,14 @@
                 previousMousePosition = { x: e.clientX, y: e.clientY };
             });
 
-            // Touch Drag Support for Mobile
+            // Touch Drag Support
             container.addEventListener('touchstart', (e) => {
                 if (e.touches.length === 1) {
                     isDragging = true;
                     previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
                 }
             }, { passive: true });
-
             container.addEventListener('touchend', () => { isDragging = false; });
-
             container.addEventListener('touchmove', (e) => {
                 if (!isDragging || !coinMesh || e.touches.length !== 1) return;
                 const deltaX = e.touches[0].clientX - previousMousePosition.x;
@@ -980,7 +952,7 @@
             const resetBtn = document.getElementById('reset-coin-btn');
             if (resetBtn) {
                 resetBtn.addEventListener('click', () => {
-                    gsap.to(coinMesh.rotation, { x: 0.5, y: 0.3, z: 0, duration: 0.8, ease: "power2.out" });
+                    gsap.to(coinMesh.rotation, { x: 0.45, y: 0.35, z: 0, duration: 0.8, ease: "power2.out" });
                 });
             }
 
@@ -988,11 +960,11 @@
             function animate() {
                 requestAnimationFrame(animate);
                 if (!isDragging && coinMesh) {
-                    coinMesh.rotation.y += 0.008;
-                    coinMesh.rotation.x += 0.002;
+                    coinMesh.rotation.y += 0.007;
+                    coinMesh.rotation.x += 0.0015;
                 }
                 if (particlesMesh) {
-                    particlesMesh.rotation.y += 0.0015;
+                    particlesMesh.rotation.y += 0.0012;
                 }
                 renderer.render(scene, camera);
             }
@@ -1002,14 +974,15 @@
             window.addEventListener('resize', () => {
                 if (!container || !renderer || !camera) return;
                 const newWidth = container.clientWidth;
-                camera.aspect = newWidth / height;
+                const newHeight = container.clientHeight;
+                camera.aspect = newWidth / newHeight;
                 camera.updateProjectionMatrix();
-                renderer.setSize(newWidth, height);
+                renderer.setSize(newWidth, newHeight);
             });
         }
 
         // ----------------------------------------------------
-        // 5. PWA Smart Installation Manager
+        // 4. PWA Smart Installation Manager
         // ----------------------------------------------------
         let deferredPrompt = null;
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -1023,28 +996,26 @@
         const statusText = document.getElementById('pwa-status-text');
         const btnText = document.getElementById('pwa-btn-text');
 
-        // Check standalone status
         if (isStandalone) {
-            if (statusText) statusText.textContent = 'Active • Running in Standalone App Mode';
+            if (statusText) statusText.textContent = 'Active • Running in Native Standalone App Mode';
             if (btnText) btnText.textContent = 'App Already Installed (Open Dashboard)';
             if (pageInstallBtn) {
                 pageInstallBtn.onclick = () => { window.location.href = '/app'; };
             }
         } else {
-            // Listen for beforeinstallprompt event
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
 
-                // Show top banner & button
                 if (smartBanner && !sessionStorage.getItem('pwa_banner_dismissed')) {
                     smartBanner.classList.remove('hidden');
                 }
-                if (topBarInstallBtn) topBarInstallBtn.classList.remove('hidden');
-                if (topBarInstallBtn) topBarInstallBtn.classList.add('flex');
+                if (topBarInstallBtn) {
+                    topBarInstallBtn.classList.remove('hidden');
+                    topBarInstallBtn.classList.add('flex');
+                }
             });
 
-            // Trigger prompt on button click
             async function triggerInstallation() {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
@@ -1056,7 +1027,7 @@
                     deferredPrompt = null;
                 } else if (isIos) {
                     switchTab('install');
-                    alert('To install on iOS:\n1. Tap the Share button [↑] at the bottom of Safari.\n2. Tap "Add to Home Screen".');
+                    alert('To install on Apple iOS:\n1. Tap the Share button [↑] at the bottom of Safari.\n2. Tap "Add to Home Screen".');
                 } else {
                     switchTab('install');
                 }
@@ -1081,20 +1052,9 @@
             });
         }
 
-        // Live Greeting Time
-        const greetingEl = document.getElementById('live-time-greeting');
-        if (greetingEl) {
-            const hour = new Date().getHours();
-            let greeting = 'Namaste 🙏';
-            if (hour < 12) greeting = 'Subha Bihani (Good Morning) ☀️';
-            else if (hour < 17) greeting = 'Good Afternoon 🌤️';
-            else greeting = 'Good Evening 🌙';
-            greetingEl.textContent = greeting;
-        }
-
-        // Initialize Three.js Coin on DOM load
+        // Initialize Three.js on DOM ready
         document.addEventListener('DOMContentLoaded', () => {
-            initThreeCoin();
+            initThreeEmblem();
         });
     </script>
 </body>
