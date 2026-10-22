@@ -129,9 +129,13 @@
             }
         }
 
-        /* Bottom Nav Safe Padding */
+        /* Bottom Clearance for Main Content so Floating Dock Never Blocks Content */
         .pb-safe {
-            padding-bottom: calc(var(--safe-bottom) + 5.5rem);
+            padding-bottom: calc(var(--safe-bottom) + 6.5rem);
+        }
+        /* Dock Placement: Close to bottom edge with mobile safe-area protection */
+        .pb-dock {
+            padding-bottom: calc(var(--safe-bottom) + 0.625rem);
         }
 
         /* SPA Tab Transitions */
@@ -612,7 +616,7 @@
         </main>
 
         <!-- ================= BOTTOM SPA MOBILE & DESKTOP DOCK NAVIGATION ================= -->
-        <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-safe pointer-events-none">
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-3 sm:px-4 pb-dock pointer-events-none">
             <div class="glass-panel px-4 py-2.5 rounded-3xl border border-white/10 shadow-2xl flex items-center justify-between sm:justify-center gap-2 sm:gap-6 pointer-events-auto backdrop-blur-2xl">
                 
                 <!-- Tab: Overview -->
@@ -1052,7 +1056,7 @@
     </script>
 
     <!-- ================= NATIVE ACCOUNT / AUTH ACTION SHEET ================= -->
-    <div id="account-action-sheet" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md" onclick="handleSheetBackdropClick(event)">
+    <div id="account-action-sheet" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 pb-8 sm:pb-4 bg-black/60 backdrop-blur-md" onclick="handleSheetBackdropClick(event)">
         <div class="w-full max-w-sm glass-panel p-6 rounded-3xl border border-white/10 shadow-2xl space-y-4 text-center">
             <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shadow-lg border border-emerald-500/30">
                 👤
