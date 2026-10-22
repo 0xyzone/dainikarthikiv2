@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources\People\Pages;
 
 use App\Filament\App\Resources\People\PersonResource;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreatePerson extends CreateRecord
 {
@@ -11,7 +12,7 @@ class CreatePerson extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = Auth::id();
 
         return $data;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Filament\App\Widgets;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class YearlyIncomeChart extends ApexChartWidget
@@ -19,7 +21,8 @@ class YearlyIncomeChart extends ApexChartWidget
 
     protected function getOptions(): array
     {
-        $user = auth()->user();
+        /** @var User|null $user */
+        $user = Auth::user();
         $year = now()->year;
 
         $incomeData = [];

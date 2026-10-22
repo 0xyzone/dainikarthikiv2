@@ -7,13 +7,14 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class IncomeRecordsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(static fn($query) => $query->where('user_id', auth()->id())->latest())
+            ->modifyQueryUsing(static fn($query) => $query->where('user_id', Auth::id())->latest())
             ->columns([
                 TextColumn::make('incomeSource.name')
                     ->searchable(),

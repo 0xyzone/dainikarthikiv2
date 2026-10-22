@@ -15,6 +15,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class CreditsRelationManager extends RelationManager
 {
@@ -87,7 +88,7 @@ class CreditsRelationManager extends RelationManager
                 CreateAction::make()
                     ->label('New Credit')
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['user_id'] = auth()->id();
+                        $data['user_id'] = Auth::id();
                         $data['person_name'] = $this->getOwnerRecord()->name;
                         return $data;
                     }),

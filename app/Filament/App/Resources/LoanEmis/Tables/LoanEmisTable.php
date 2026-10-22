@@ -20,6 +20,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class LoanEmisTable
 {
@@ -27,7 +28,7 @@ class LoanEmisTable
     {
         return $table
             ->modifyQueryUsing(static fn (Builder $query) => $query
-                ->where('user_id', auth()->id())
+                ->where('user_id', Auth::id())
                 ->with(['loan'])
                 ->orderBy('due_date', 'asc')
             )
@@ -93,7 +94,7 @@ class LoanEmisTable
                     ->relationship(
                         name: 'loan',
                         titleAttribute: 'title',
-                        modifyQueryUsing: fn ($query) => $query->where('user_id', auth()->id())
+                        modifyQueryUsing: fn ($query) => $query->where('user_id', Auth::id())
                     )
                     ->searchable()
                     ->preload(),

@@ -12,7 +12,10 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class LoanForm
 {
@@ -21,7 +24,7 @@ class LoanForm
         return $schema
             ->components([
                 Hidden::make('user_id')
-                    ->default(auth()->id()),
+                    ->default(Auth::id()),
 
                 Section::make('Loan Information')
                     ->description('Basic details and lender information')
@@ -154,7 +157,7 @@ class LoanForm
             ]);
     }
 
-    public static function recalculateEmi($get, $set): void
+    public static function recalculateEmi(Get $get, Set $set): void
     {
         $principal = (float) ($get('principal_amount') ?? 0);
         $rate = (float) ($get('interest_rate') ?? 0);

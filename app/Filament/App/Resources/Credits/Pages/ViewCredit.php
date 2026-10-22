@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Auth;
 
 class ViewCredit extends ViewRecord
 {
@@ -32,7 +33,7 @@ class ViewCredit extends ViewRecord
                 ->modalSubmitActionLabel('Save Payment')
                 ->schema([
                     Hidden::make('user_id')
-                        ->default(auth()->id()),
+                        ->default(Auth::id()),
 
                     DatePicker::make('payment_date')
                         ->label('Payment Date')
@@ -74,7 +75,7 @@ class ViewCredit extends ViewRecord
                         ->nullable(),
                 ])
                 ->action(function (array $data): void {
-                    $data['user_id'] = auth()->id();
+                    $data['user_id'] = Auth::id();
                     $this->record->payments()->create($data);
 
                     Notification::make()

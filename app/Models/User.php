@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\ExpenseSource;
 use App\Models\IncomeRecord;
 use App\Models\IncomeSource;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;

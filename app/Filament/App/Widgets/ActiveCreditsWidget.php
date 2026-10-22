@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ActiveCreditsWidget extends TableWidget
 {
@@ -29,7 +30,7 @@ class ActiveCreditsWidget extends TableWidget
         return $table
             ->query(
                 fn (): Builder => Credit::query()
-                    ->where('user_id', auth()->id())
+                    ->where('user_id', Auth::id())
                     ->where('status', '!=', 'settled')
                     ->with('person')
                     ->withSum('payments', 'amount')
@@ -95,14 +96,14 @@ class ActiveCreditsWidget extends TableWidget
                     ->modalHeading(fn (Credit $record) => ($record->type === 'given' ? 'Collect Payment from ' : 'Record Payment to ') . ($record->person?->name ?? $record->person_name))
                     ->modalSubmitActionLabel('Save Payment')
                     ->schema([
-                        Hidden::make('user_id')->default(auth()->id()),
+                        Hidden::make('user_id')->default(Auth::id()),
                         DatePicker::make('payment_date')->label('Payment Date')->default(now())->native(false)->required(),
                         TextInput::make('amount')->label('Payment Amount')->numeric()->required()->minValue(0.01)->prefix('Rs.')->default(fn (Credit $record) => $record->remaining_amount > 0 ? $record->remaining_amount : null),
                         Select::make('payment_method')->label('Payment Method')->options(['Cash' => 'Cash', 'Bank Transfer' => 'Bank Transfer', 'Digital Wallet / UPI' => 'Digital Wallet / UPI (eSewa/Khalti)', 'Cheque' => 'Cheque', 'Other' => 'Other'])->default('Cash')->required(),
                         TextInput::make('notes')->label('Reference / Notes')->placeholder('e.g. Installment')->maxLength(255),
                     ])
                     ->action(function (Credit $record, array $data): void {
-                        $data['user_id'] = auth()->id();
+                        $data['user_id'] = Auth::id();
                         $record->payments()->create($data);
                         Notification::make()->title('Payment recorded successfully')->success()->send();
                     }),

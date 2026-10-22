@@ -21,6 +21,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class CreditsTable
 {
@@ -28,7 +29,7 @@ class CreditsTable
     {
         return $table
             ->modifyQueryUsing(static fn (Builder $query) => $query
-                ->where('user_id', auth()->id())
+                ->where('user_id', Auth::id())
                 ->with('person')
                 ->withSum('payments', 'amount')
                 ->latest('date')
@@ -132,7 +133,7 @@ class CreditsTable
                     ->modalSubmitActionLabel('Save Payment')
                     ->schema([
                         Hidden::make('user_id')
-                            ->default(auth()->id()),
+                            ->default(Auth::id()),
 
                         DatePicker::make('payment_date')
                             ->label('Payment Date')
@@ -174,7 +175,7 @@ class CreditsTable
                             ->nullable(),
                     ])
                     ->action(function (Credit $record, array $data): void {
-                        $data['user_id'] = auth()->id();
+                        $data['user_id'] = Auth::id();
                         $record->payments()->create($data);
 
                         Notification::make()

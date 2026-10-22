@@ -13,6 +13,7 @@ use App\Models\LoanEmi;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class LoanEmiResource extends Resource
@@ -32,7 +33,7 @@ class LoanEmiResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $dueCount = static::getModel()::where('user_id', auth()->id())
+        $dueCount = static::getModel()::where('user_id', Auth::id())
             ->where('status', '!=', 'paid')
             ->where('due_date', '<=', now()->endOfMonth())
             ->count();

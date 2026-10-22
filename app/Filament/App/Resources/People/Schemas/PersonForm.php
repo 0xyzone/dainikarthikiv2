@@ -8,6 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class PersonForm
 {
@@ -16,7 +17,7 @@ class PersonForm
         return $schema
             ->components([
                 Hidden::make('user_id')
-                    ->default(auth()->id()),
+                    ->default(Auth::id()),
 
                 Section::make('Person / Counterparty Details')
                     ->description('Store details of people you lend to or borrow from.')

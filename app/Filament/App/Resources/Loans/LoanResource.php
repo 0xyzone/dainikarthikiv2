@@ -14,6 +14,7 @@ use App\Models\Loan;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class LoanResource extends Resource
@@ -33,7 +34,7 @@ class LoanResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::where('user_id', auth()->id())
+        $count = static::getModel()::where('user_id', Auth::id())
             ->where('status', 'active')
             ->count();
 

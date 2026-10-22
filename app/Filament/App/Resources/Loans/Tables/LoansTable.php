@@ -19,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class LoansTable
 {
@@ -26,7 +27,7 @@ class LoansTable
     {
         return $table
             ->modifyQueryUsing(static fn (Builder $query) => $query
-                ->where('user_id', auth()->id())
+                ->where('user_id', Auth::id())
                 ->with(['emis'])
                 ->latest()
             )

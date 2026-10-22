@@ -18,6 +18,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -30,7 +31,7 @@ class PaymentsRelationManager extends RelationManager
         return $schema
             ->components([
                 Hidden::make('user_id')
-                    ->default(auth()->id()),
+                    ->default(Auth::id()),
 
                 DatePicker::make('payment_date')
                     ->label('Payment Date')
@@ -116,7 +117,7 @@ class PaymentsRelationManager extends RelationManager
                 CreateAction::make()
                     ->label('Record Payment')
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['user_id'] = auth()->id();
+                        $data['user_id'] = Auth::id();
                         return $data;
                     })
                     ->after(function () {

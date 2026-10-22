@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class LoanEmiForm
 {
@@ -18,7 +19,7 @@ class LoanEmiForm
         return $schema
             ->components([
                 Hidden::make('user_id')
-                    ->default(auth()->id()),
+                    ->default(Auth::id()),
 
                 Section::make('EMI Schedule Details')
                     ->schema([
@@ -29,7 +30,7 @@ class LoanEmiForm
                                     ->relationship(
                                         name: 'loan',
                                         titleAttribute: 'title',
-                                        modifyQueryUsing: fn ($query) => $query->where('user_id', auth()->id())->latest()
+                                        modifyQueryUsing: fn ($query) => $query->where('user_id', Auth::id())->latest()
                                     )
                                     ->searchable()
                                     ->preload()

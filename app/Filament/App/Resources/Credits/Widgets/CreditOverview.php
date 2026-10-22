@@ -6,12 +6,13 @@ use App\Models\Credit;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class CreditOverview extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         $credits = Credit::where('user_id', $userId)
             ->withSum('payments', 'amount')

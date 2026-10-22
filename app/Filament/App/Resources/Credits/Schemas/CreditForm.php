@@ -14,6 +14,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Auth;
 
 class CreditForm
 {
@@ -22,7 +23,7 @@ class CreditForm
         return $schema
             ->components([
                 Hidden::make('user_id')
-                    ->default(auth()->id()),
+                    ->default(Auth::id()),
 
                 Section::make('Credit Details')
                     ->description('Specify whether you gave or took this credit and the counterparty details.')
@@ -53,7 +54,7 @@ class CreditForm
                                     ->relationship(
                                         name: 'person',
                                         titleAttribute: 'name',
-                                        modifyQueryUsing: static fn ($query) => $query->where('user_id', auth()->id())->latest('name')
+                                        modifyQueryUsing: static fn ($query) => $query->where('user_id', Auth::id())->latest('name')
                                     )
                                     ->searchable()
                                     ->preload()
@@ -69,7 +70,7 @@ class CreditForm
                                     })
                                     ->createOptionForm([
                                         Hidden::make('user_id')
-                                            ->default(auth()->id()),
+                                            ->default(Auth::id()),
 
                                         TextInput::make('name')
                                             ->label('Full Name / Entity')
@@ -100,7 +101,7 @@ class CreditForm
                                             ->columnSpanFull(),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        $data['user_id'] = auth()->id();
+                                        $data['user_id'] = Auth::id();
                                         $person = Person::create($data);
                                         return $person->id;
                                     }),

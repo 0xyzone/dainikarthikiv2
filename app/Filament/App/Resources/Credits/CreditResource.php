@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class CreditResource extends Resource
@@ -34,7 +35,7 @@ class CreditResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::where('user_id', auth()->id())
+        $count = static::getModel()::where('user_id', Auth::id())
             ->where('status', '!=', 'settled')
             ->count();
 

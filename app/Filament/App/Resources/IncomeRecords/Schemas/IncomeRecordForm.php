@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class IncomeRecordForm
 {
@@ -17,18 +18,18 @@ class IncomeRecordForm
         return $schema
             ->components([
                 Hidden::make('user_id')
-                    ->default(auth()->id()),
+                    ->default(Auth::id()),
                 Select::make('income_source_id')
                     ->relationship(
                         name: 'incomeSource', 
                         titleAttribute: 'name',
-                        modifyQueryUsing: static fn($query) => $query->where('user_id', auth()->id())->latest())
+                        modifyQueryUsing: static fn($query) => $query->where('user_id', Auth::id())->latest())
                     ->disablePlaceholderSelection()
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
                         Hidden::make('user_id')
-                            ->default(auth()->id()),
+                            ->default(Auth::id()),
                         TextInput::make('name')
                             ->required(),
                         Textarea::make('description')
