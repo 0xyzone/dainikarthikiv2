@@ -88,4 +88,38 @@ class LoginTest extends TestCase
             }
         );
     }
+
+    public function test_email_verification_prompt_page_renders_successfully(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->actingAs($user)->get('/app/email-verification/prompt');
+
+        $response->assertStatus(200);
+        $response->assertSee('Verify Your Email');
+        $response->assertSee($user->email);
+        $response->assertSee('auth-card-shell');
+    }
+
+    public function test_resend_notification_action_dispatches_email(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $this->actingAs($user);
+        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('app'));
+
+        \Illuminate\Support\Facades\Notification::fake();
+
+        $prompt = app(\App\Filament\App\Pages\Auth\EmailVerification\EmailVerificationPrompt::class);
+        $prompt->resendNotificationAction()->call();
+
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $user,
+            \Filament\Auth\Notifications\VerifyEmail::class
+        );
+    }
 }

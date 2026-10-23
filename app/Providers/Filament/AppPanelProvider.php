@@ -40,7 +40,7 @@ class AppPanelProvider extends PanelProvider
             ->profile()
             ->registration(\App\Filament\App\Pages\Auth\Register::class)
             ->passwordReset()
-            ->emailVerification()
+            ->emailVerification(\App\Filament\App\Pages\Auth\EmailVerification\EmailVerificationPrompt::class)
             ->colors([
                 'primary' => Color::Emerald,
             ])
