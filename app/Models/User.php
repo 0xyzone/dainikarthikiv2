@@ -112,4 +112,25 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar, Filame
         return true;
         // return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        if (! $this->getKey()) {
+            return;
+        }
+
+        $currentPanel = \Filament\Facades\Filament::getCurrentPanel();
+        $panel = $currentPanel && $currentPanel->hasEmailVerification()
+            ? $currentPanel
+            : \Filament\Facades\Filament::getPanel('app');
+
+        $notification = app(\Filament\Auth\Notifications\VerifyEmail::class);
+        $notification->url = $panel->getVerifyEmailUrl($this);
+
+        if (method_exists($this, 'notifyNow')) {
+            $this->notifyNow($notification);
+        } else {
+            $this->notify($notification);
+        }
+    }
 }

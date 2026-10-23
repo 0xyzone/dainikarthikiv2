@@ -69,4 +69,23 @@ class LoginTest extends TestCase
             'name' => 'Aayush Shrestha',
         ]);
     }
+
+    public function test_email_verification_notification_dispatches_successfully(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        \Illuminate\Support\Facades\Notification::fake();
+
+        $user->sendEmailVerificationNotification();
+
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $user,
+            \Filament\Auth\Notifications\VerifyEmail::class,
+            function ($notification) use ($user) {
+                return str_contains($notification->url, '/app/email-verification/verify/' . $user->getKey());
+            }
+        );
+    }
 }
