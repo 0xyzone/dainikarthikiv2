@@ -122,4 +122,23 @@ class LoginTest extends TestCase
             \Filament\Auth\Notifications\VerifyEmail::class
         );
     }
+
+    public function test_password_reset_request_sends_notification(): void
+    {
+        $user = User::factory()->create();
+
+        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('app'));
+
+        \Illuminate\Support\Facades\Notification::fake();
+
+        Livewire::test(\Filament\Auth\Pages\PasswordReset\RequestPasswordReset::class)
+            ->fillForm(['email' => $user->email])
+            ->call('request')
+            ->assertHasNoFormErrors();
+
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $user,
+            \Filament\Auth\Notifications\ResetPassword::class
+        );
+    }
 }

@@ -133,4 +133,21 @@ class User extends Authenticatable implements MustVerifyEmail, HasAvatar, Filame
             $this->notify($notification);
         }
     }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $currentPanel = \Filament\Facades\Filament::getCurrentPanel();
+        $panel = $currentPanel && $currentPanel->hasPasswordReset()
+            ? $currentPanel
+            : \Filament\Facades\Filament::getPanel('app');
+
+        $notification = app(\Filament\Auth\Notifications\ResetPassword::class, ['token' => $token]);
+        $notification->url = $panel->getResetPasswordUrl($token, $this);
+
+        if (method_exists($this, 'notifyNow')) {
+            $this->notifyNow($notification);
+        } else {
+            $this->notify($notification);
+        }
+    }
 }

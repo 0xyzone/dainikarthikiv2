@@ -16,3 +16,10 @@ Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $requ
         'signature' => $request->query('signature'),
     ]);
 })->middleware(['signed'])->name('verification.verify');
+
+Route::get('/password-reset/reset', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('filament.app.auth.password-reset.reset', [
+        'token' => $request->query('token'),
+        'email' => $request->query('email'),
+    ]);
+})->name('password.reset');
