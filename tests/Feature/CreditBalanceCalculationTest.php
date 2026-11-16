@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Filament\App\Resources\Credits\Widgets\CreditOverview;
 use App\Filament\App\Resources\People\Pages\ListPeople;
+use App\Filament\App\Widgets\PersonBalancesWidget;
 use App\Filament\App\Widgets\StatsOverview;
 use App\Models\Credit;
 use App\Models\Person;
@@ -126,5 +127,21 @@ class CreditBalanceCalculationTest extends TestCase
             ->assertCanSeeTableRecords([$alice, $bob])
             ->assertSee('+Rs. 600.00')
             ->assertSee('-Rs. 600.00');
+
+        // PersonBalancesWidget shows unsettled persons and settles all pending credits for a person
+        Livewire::test(PersonBalancesWidget::class)
+            ->assertCanSeeTableRecords([$alice, $bob])
+            ->assertSee('+Rs. 600.00')
+            ->assertSee('-Rs. 600.00')
+            ->callTableAction('settle', $bob, data: [
+                'payment_date' => now()->toDateString(),
+                'payment_method' => 'Cash',
+                'notes' => 'Settled in full',
+            ])
+            ->assertHasNoTableActionErrors()
+            ->assertCanNotSeeTableRecords([$bob]);
+
+        $this->assertEquals('settled', $takenPartial->fresh()->status);
+        $this->assertEquals(0.00, $bob->fresh()->pending_balance);
     }
 }
