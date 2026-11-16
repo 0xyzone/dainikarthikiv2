@@ -46,15 +46,23 @@ class Credit extends Model
 
     public function getTotalPaidAttribute(): float
     {
-        return (float) ($this->payments_sum_amount ?? $this->payments()->sum('amount'));
+        if (array_key_exists('payments_sum_amount', $this->attributes)) {
+            return (float) ($this->attributes['payments_sum_amount'] ?? 0);
+        }
+
+        return (float) $this->payments()->sum('amount');
     }
 
     public function getRemainingAmountAttribute(): float
     {
+        if ($this->isSettled()) {
+            return 0.0;
+        }
+
         $paid = $this->total_paid;
         $remaining = (float) $this->amount - $paid;
 
-        return max(0, $remaining);
+        return max(0.0, round($remaining, 2));
     }
 
     public function refreshPaymentStatus(): void

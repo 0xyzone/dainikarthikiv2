@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Widgets;
 
+use App\Models\Credit;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -69,16 +70,14 @@ class StatsOverview extends StatsOverviewWidget
         $givenCredits = $credits->where('type', 'given');
         $takenCredits = $credits->where('type', 'taken');
 
-        $givenTotal = (float) $givenCredits->sum('amount');
-        $givenPaid = (float) $givenCredits->sum('payments_sum_amount');
-        $givenRemaining = max(0, $givenTotal - $givenPaid);
+        $activeGiven = $givenCredits->where('status', '!=', 'settled');
+        $activeTaken = $takenCredits->where('status', '!=', 'settled');
 
-        $takenTotal = (float) $takenCredits->sum('amount');
-        $takenPaid = (float) $takenCredits->sum('payments_sum_amount');
-        $takenRemaining = max(0, $takenTotal - $takenPaid);
+        $givenRemaining = round((float) $activeGiven->sum(fn (Credit $credit): float => $credit->remaining_amount), 2);
+        $takenRemaining = round((float) $activeTaken->sum(fn (Credit $credit): float => $credit->remaining_amount), 2);
 
-        $activeGivenCount = $givenCredits->where('status', '!=', 'settled')->count();
-        $activeTakenCount = $takenCredits->where('status', '!=', 'settled')->count();
+        $activeGivenCount = $activeGiven->count();
+        $activeTakenCount = $activeTaken->count();
 
         // 6-month sparkline
         $incomeSparkline = [];

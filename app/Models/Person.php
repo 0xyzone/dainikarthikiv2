@@ -34,4 +34,36 @@ class Person extends Model
     {
         return (float) $this->credits()->where('type', 'taken')->sum('amount');
     }
+
+    /**
+     * Sum remaining balance for pending/partial credits of a given type.
+     */
+    protected function sumPendingRemaining(string $type): float
+    {
+        $credits = $this->relationLoaded('credits')
+            ? $this->credits
+            : $this->credits()->where('status', '!=', 'settled')->withSum('payments', 'amount')->get();
+
+        $total = $credits
+            ->where('type', $type)
+            ->where('status', '!=', 'settled')
+            ->sum(fn (Credit $credit): float => $credit->remaining_amount);
+
+        return round((float) $total, 2);
+    }
+
+    public function getPendingReceivableAttribute(): float
+    {
+        return $this->sumPendingRemaining('given');
+    }
+
+    public function getPendingPayableAttribute(): float
+    {
+        return $this->sumPendingRemaining('taken');
+    }
+
+    public function getPendingBalanceAttribute(): float
+    {
+        return round($this->pending_receivable - $this->pending_payable, 2);
+    }
 }

@@ -55,7 +55,7 @@ class CreditsRelationManager extends RelationManager
 
                 TextColumn::make('remaining_amount')
                     ->label('Remaining Due')
-                    ->state(fn (Credit $record) => max(0, (float) $record->amount - (float) ($record->payments_sum_amount ?? 0)))
+                    ->state(fn (Credit $record) => $record->remaining_amount)
                     ->numeric(decimalPlaces: 2)
                     ->prefix('Rs. ')
                     ->weight('bold')

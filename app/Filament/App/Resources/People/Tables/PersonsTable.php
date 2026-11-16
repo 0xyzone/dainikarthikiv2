@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\People\Tables;
 
+use App\Models\Person;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -20,6 +21,11 @@ class PersonsTable
             ->modifyQueryUsing(static fn (Builder $query) => $query
                 ->where('user_id', Auth::id())
                 ->withCount('credits')
+                ->with([
+                    'credits' => fn ($creditQuery) => $creditQuery
+                        ->where('status', '!=', 'settled')
+                        ->withSum('payments', 'amount'),
+                ])
                 ->latest()
             )
             ->columns([
@@ -53,6 +59,45 @@ class PersonsTable
                     ->badge()
                     ->color('info')
                     ->sortable(),
+
+                TextColumn::make('pending_balance')
+                    ->label('Remaining Balance')
+                    ->state(fn (Person $record): float => $record->pending_balance)
+                    ->formatStateUsing(function (float $state): string {
+                        if ($state > 0) {
+                            return '+Rs. ' . number_format($state, 2);
+                        }
+
+                        if ($state < 0) {
+                            return '-Rs. ' . number_format(abs($state), 2);
+                        }
+
+                        return 'Rs. 0.00';
+                    })
+                    ->description(function (Person $record): string {
+                        $receivable = $record->pending_receivable;
+                        $payable = $record->pending_payable;
+
+                        if ($receivable > 0 && $payable > 0) {
+                            return 'Collect: Rs. ' . number_format($receivable, 2) . ' | Repay: Rs. ' . number_format($payable, 2);
+                        }
+
+                        if ($receivable > 0) {
+                            return 'To Collect';
+                        }
+
+                        if ($payable > 0) {
+                            return 'To Repay';
+                        }
+
+                        return 'Settled';
+                    })
+                    ->weight('bold')
+                    ->color(fn (float $state): string => match (true) {
+                        $state > 0 => 'success',
+                        $state < 0 => 'danger',
+                        default => 'gray',
+                    }),
 
                 TextColumn::make('created_at')
                     ->label('Added On')

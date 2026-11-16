@@ -21,15 +21,17 @@ class CreditOverview extends StatsOverviewWidget
         $givenCredits = $credits->where('type', 'given');
         $takenCredits = $credits->where('type', 'taken');
 
-        $totalGiven = $givenCredits->sum('amount');
-        $givenPaid = $givenCredits->sum('payments_sum_amount');
-        $givenRemaining = max(0, $totalGiven - $givenPaid);
+        $totalGiven = (float) $givenCredits->sum('amount');
+        $givenRemaining = round((float) $givenCredits
+            ->where('status', '!=', 'settled')
+            ->sum(fn (Credit $credit): float => $credit->remaining_amount), 2);
 
-        $totalTaken = $takenCredits->sum('amount');
-        $takenPaid = $takenCredits->sum('payments_sum_amount');
-        $takenRemaining = max(0, $totalTaken - $takenPaid);
+        $totalTaken = (float) $takenCredits->sum('amount');
+        $takenRemaining = round((float) $takenCredits
+            ->where('status', '!=', 'settled')
+            ->sum(fn (Credit $credit): float => $credit->remaining_amount), 2);
 
-        $netPosition = $givenRemaining - $takenRemaining;
+        $netPosition = round($givenRemaining - $takenRemaining, 2);
 
         return [
             Stat::make('Credit Given (Receivable)', 'Rs. ' . number_format($totalGiven, 2))
