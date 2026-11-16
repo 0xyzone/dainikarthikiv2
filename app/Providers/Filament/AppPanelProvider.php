@@ -36,6 +36,11 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->id('app')
             ->path('app')
+            ->brandName('Dainik Arthiki')
+            ->brandLogo(asset('images/logo-light.svg'))
+            ->darkModeBrandLogo(asset('images/logo-dark.svg'))
+            ->brandLogoHeight('2.25rem')
+            ->favicon(app()->environment('local') ? asset('images/favicon-local.svg') : asset('images/favicon-prod.svg'))
             ->login(\App\Filament\App\Pages\Auth\Login::class)
             ->profile()
             ->registration(\App\Filament\App\Pages\Auth\Register::class)

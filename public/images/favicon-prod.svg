@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="prodFavGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+  </defs>
+  <!-- Production: Deep Slate + Emerald/Teal -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="#090d16" stroke="url(#prodFavGrad)" stroke-width="4"/>
+  <path d="M 27.5 24.5 C 27.5 21.5, 24.5 20, 20.8 20 C 16.8 20, 14 22.2, 14 25.5 C 14 29, 17.2 30.3, 21.2 31.6 C 25.2 32.9, 28 34.2, 28 38 C 28 41.8, 25 44, 20.5 44 C 16.5 44, 14 42.2, 13.5 39.5"
+        stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 35.5 44 V 20 H 44 C 48 20, 50.5 22.5, 50.5 26.5 C 50.5 30.5, 48 33, 44 33 H 35.5"
+        stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

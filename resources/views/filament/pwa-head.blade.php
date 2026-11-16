@@ -1,17 +1,20 @@
+@php
+    $isLocalEnv = app()->environment('local');
+    $faviconUrl = asset($isLocalEnv ? 'images/favicon-local.svg' : 'images/favicon-prod.svg');
+@endphp
+
 <!-- PWA Manifest & Meta Tags -->
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#10b981">
+<meta name="theme-color" content="{{ $isLocalEnv ? '#f59e0b' : '#10b981' }}">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dainik Arthiki">
 <meta name="application-name" content="Dainik Arthiki">
 
-<!-- PWA Icons -->
+<!-- Environment-Aware Favicon & PWA Icons -->
+<link rel="icon" type="image/svg+xml" href="{{ $faviconUrl }}">
 <link rel="apple-touch-icon" sizes="180x180" href="/pwa-icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/pwa-icons/icon-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/pwa-icons/icon-512x512.png">
-<link rel="icon" type="image/svg+xml" href="/pwa-icons/icon.svg">
 
 <!-- PWA Service Worker Registration -->
 <script>

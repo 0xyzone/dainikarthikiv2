@@ -172,14 +172,7 @@
         <!-- ================= INLINE BRAND BAR ================= -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-1 w-full flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
-                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                    </div>
-                </div>
+                <img src="{{ asset('images/sp-mark.svg') }}" alt="SP Logo" class="w-10 h-10 rounded-2xl shadow-lg shadow-emerald-500/20">
                 <div>
                     <span class="text-base font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
                         Dainik Arthiki
