@@ -172,7 +172,7 @@
         <!-- ================= INLINE BRAND BAR ================= -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-1 w-full flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/sp-mark.svg') }}" alt="SP Logo" class="w-10 h-10 rounded-2xl shadow-lg shadow-emerald-500/20">
+                <img src="{{ asset('images/da-mark.svg') }}" alt="DA Logo" class="w-10 h-10 rounded-2xl shadow-lg shadow-emerald-500/20">
                 <div>
                     <span class="text-base font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
                         Dainik Arthiki

@@ -4,7 +4,7 @@
     <!-- Brand Emblem Header -->
     <div class="auth-emblem-wrap">
         <a href="/" class="auth-emblem" title="Return to Dainik Arthiki">
-            <img src="{{ asset('images/sp-mark.svg') }}" alt="SP Logo" style="width: 100%; height: 100%; border-radius: 14px; display: block;">
+            <img src="{{ asset('images/da-mark.svg') }}" alt="DA Logo" style="width: 100%; height: 100%; border-radius: 14px; display: block;">
         </a>
     </div>
 

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="daMarkGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="55%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="daLetterGrad" x1="14" y1="20" x2="50" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#a7f3d0"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="#090d16" stroke="url(#daMarkGrad)" stroke-width="2.5"/>
+  <rect x="6" y="6" width="52" height="52" rx="12" fill="url(#daMarkGrad)" fill-opacity="0.1"/>
+  <!-- D -->
+  <path d="M 14.5 20.5 H 21.5 C 26.5 20.5, 29.5 24.5, 29.5 32 C 29.5 39.5, 26.5 43.5, 21.5 43.5 H 14.5 Z"
+        stroke="url(#daLetterGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- A -->
+  <path d="M 34.5 43.5 L 42.5 20.5 L 50.5 43.5 M 37.2 36 H 47.8"
+        stroke="#10b981" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="51" cy="13" r="3" fill="#34d399"/>
+</svg>
