@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends StatsOverviewWidget
 {
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 4;
 
     protected function getStats(): array
     {

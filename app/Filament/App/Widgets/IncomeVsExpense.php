@@ -10,7 +10,7 @@ class IncomeVsExpense extends ApexChartWidget
 {
     protected static ?string $chartId = 'incomeVsExpense';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 2;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

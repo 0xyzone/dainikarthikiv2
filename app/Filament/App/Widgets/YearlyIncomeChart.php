@@ -10,7 +10,7 @@ class YearlyIncomeChart extends ApexChartWidget
 {
     protected static ?string $chartId = 'yearlyIncomeChart';
 
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 5;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

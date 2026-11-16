@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class PersonBalancesWidget extends TableWidget
 {
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 1;
 
     protected int|string|array $columnSpan = [
         'default' => 'full',
